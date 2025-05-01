@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEZ - Food Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background-color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-tag {
+            background-color: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navigation {
+            background-color: #333;
+            border-top: 2px solid #e67e22;
+            border-bottom: 2px solid #e67e22;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+        
+        .nav-links li a:hover {
+            background-color: #444;
+        }
+        
+        .hero {
+            background-color: #f0f0f0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .gauge {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: white;
+            border: 8px solid #e67e22;
+            position: relative;
+        }
+        
+        .gauge:before {
+            content: "";
+            position: absolute;
+            width: 6px;
+            height: 50px;
+            background: black;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%) rotate(45deg);
+            transform-origin: bottom center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-size: 36px;
+            margin: 20px 0 10px;
+        }
+        
+        .hero-subtitle {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .download-section {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .stats-counter {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 40px;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .category-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+        
+        .category-item {
+            text-align: center;
+            width: 120px;
+            margin: 10px;
+        }
+        
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        
+        .product-section {
+            background-color: #fff;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .product-section h2 {
+            color: #444;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .product-card {
+            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .product-image {
+            width: 150px;
+            height: 150px;
+            background-color: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+        }
+        
+        .product-details {
+            flex: 1;
+        }
+        
+        .product-title {
+            font-size: 22px;
+            margin: 0 0 10px;
+            color: #333;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            background-color: #f9f9f9;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .rating-bar {
+            background-color: #eee;
+            height: 15px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .rating-fill {
+            background-color: #4CAF50;
+            height: 100%;
+        }
+        
+        .secondary-nav {
+            display: flex;
+            justify-content: flex-end;
+            background-color: #f8f8f8;
+            padding: 10px 20px;
+        }
+        
+        .search-box {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .rightmost-nav {
+            background-color: #f0f0f0;
+            padding: 5px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stats-section {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .recent-tests {
+            max-width: 500px;
+            margin: 20px;
+        }
+        
+        .test-item {
+            display: flex;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .test-flag {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .test-time {
+            color: #888;
+            width: 80px;
+        }
+        
+        .test-product {
+            flex: 1;
+        }
+        
+        .test-score {
+            width: 120px;
+            text-align: right;
+        }
+        
+        .button {
+            padding: 8px 16px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .search-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">ShopEZ</div>
+        <div class="user-info">
+            <div class="user-tag">
+                🔒 PHL-User 🇵🇭
+            </div>
+            <select>
+                <option>PH</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="secondary-nav">
+        <input type="text" class="search-box" placeholder="Search...">
+        <button class="search-button">🔍</button>
+    </div>
+    
+    <div class="navigation">
+        <ul class="nav-links">
+            <li><a href="#">SNACKS</a></li>
+            <li><a href="#">FRUITS</a></li>
+            <li><a href="#">VEGETABLES</a></li>
+            <li><a href="#">DRINKS</a></li>
+            <li><a href="#">GRAINS</a></li>
+            <li><a href="#">DAIRY</a></li>
+            <li><a href="#">MEATS</a></li>
+            <li style="margin-left: auto;"><a href="#">COMPARE</a></li>
+            <li><a href="#">ABOUT</a></li>
+        </ul>
+    </div>
+    
+    <div class="hero">
+        <div class="gauge"></div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">ShopEZ<span style="color: #999; font-size: 24px;">?</span></h1>
+            <p class="hero-subtitle">Food comparison includes its speciality</p>
+            
+            <div class="download-section">
+                <div style="background: white; padding: 8px 20px; border-radius: 4px;">
+                    👁️ 69,563,965 PCs
+                </div>
+                <button class="button">📥 Free Download</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats-counter">
+        <div>2,348,459 Idunno</div>
+        <div>348,942,121 Idunno</div>
+        <div>3,600,456 Votes</div>
+    </div>
+    
+    <div class="category-grid">
+        <div class="category-item">
+            <div class="category-icon">🍿</div>
+            <div>SNACKS</div>
+        </div>
+        <div class="category-item">
+            <div class="category-icon">🍎</div>
+            <div>FRUITS</div>
+        </div>
+        <div class="category-item">
+            <div class="category-icon">🥦</div>
+            <div>VEGETABLES</div>
+        </div>
+        <div class="category-item">
+            <div class="category-icon">🥤</div>
+            <div>DRINKS</div>
+        </div>
+        <div class="category-item">
+            <div class="category-icon">🌾</div>
+            <div>GRAINS</div>
+        </div>
+        <div class="category-item">
+            <div class="category-icon">🧀</div>
+            <div>DAIRY</div>
+        </div>
+    </div>
+    
+    <div class="product-section">
+        <h2>New Potato Chips</h2>
+        
+        <div class="product-card">
+            <div class="product-image">🥔</div>
+            <div class="product-details">
+                <h3 class="product-title">Lays Classic ₱120.50</h3>
+                <p>Lay's classic potato chips are around 20% lower in sodium than their corresponding kettle-cooked counterparts. Supply is readily available at most supermarkets so value for money considerations are quite favorable. Over the last five years, aggressive marketing through platforms like TV, YouTube, and social media—combined with celebrity endorsements—has solidified the brand's position in the snack market.</p>
+                
+                <div style="margin-top: 15px;">
+                    <strong>Nutrition Facts (per 100g):</strong>
+                    <table class="comparison-table">
+                        <tr>
+                            <td width="20%">Calories:</td>
+                            <td width="15%">536 kcal</td>
+                            <td width="65%">
+                                <div class="rating-bar">
+                                    <div class="rating-fill" style="width: 75%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Fat:</td>
+                            <td>34.6g</td>
+                            <td>
+                                <div class="rating-bar">
+                                    <div class="rating-fill" style="width: 80%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sodium:</td>
+                            <td>525mg</td>
+                            <td>
+                                <div class="rating-bar">
+                                    <div class="rating-fill" style="width: 60%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="rightmost-nav">
+        <div class="stats-section">
+            <div>
+                <a href="#">Current Snacks</a>
+                <div>69,563,965 Foods tested</div>
+            </div>
+            <div>
+                <div>Score</div>
+            </div>
+            <div>
+                <div>Rates</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="recent-tests">
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">4 secs ago</div>
+            <div class="test-product">Jack 'n Jill Potato Chips Original</div>
+            <div class="test-score">Heart healthy <span style="color: green">56%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">46 secs ago</div>
+            <div class="test-product">Pringles Original</div>
+            <div class="test-score">Fiber content <span style="color: green">72%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">47 secs ago</div>
+            <div class="test-product">Oishi Prawn Crackers</div>
+            <div class="test-score">Protein value <span style="color: orange">48%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">51 secs ago</div>
+            <div class="test-product">V-Cut Spicy BBQ</div>
+            <div class="test-score">Salt content <span style="color: red">38%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">1 min ago</div>
+            <div class="test-product">Nova Country Potato</div>
+            <div class="test-score">Overall value <span style="color: green">95%</span></div>
+        </div>
+    </div>
+</body>
+</html>
