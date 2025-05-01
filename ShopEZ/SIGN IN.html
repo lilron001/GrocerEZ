@@ -3,681 +3,1464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Use Firebase v8 (non-module) to avoid import/export errors -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<!-- Firebase UI -->
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+<script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+
+    <title>ShopEZ - Food Comparison</title>
+
     <style>
-     
-     
-
-        /* Sidebar Authentication */
-        .auth-sidebar {
-            position: fixed;
-            top: 0;
-            right: -400px; /* Start off-screen */
-            width: 380px;
-            height: 100vh;
-            background-color: white;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease-in-out;
-            z-index: 1000;
-            overflow-y: auto;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
         }
-
-        .auth-sidebar.active {
-            right: 0; /* Slide in */
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        .auth-header {
+        
+        .header {
+            background-color: #fff;
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #ddd;
         }
-
-        .close-button {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #555;
-        }
-
-        .auth-content {
-            padding: 20px;
-        }
-
-        .auth-card {
-            width: 100%;
-            text-align: center;
-        }
-
+        
         .logo {
-            width: 60px;
-            height: 60px;
-            background-color: #8BC34A;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 20px;
-        }
-
-        h2 {
-            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
             color: #333;
         }
-
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-tag {
+            background-color: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navigation {
+            background-color: #333;
+            border-top: 2px solid #e67e22;
+            border-bottom: 2px solid #e67e22;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+        
+        .nav-links li a:hover {
+            background-color: #444;
+        }
+        
+        .hero {
+            background-color: #f0f0f0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .gauge {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: white;
+            border: 8px solid #e67e22;
             position: relative;
         }
-
-        .input-group input {
-            width: 100%;
-            padding: 10px 30px 10px 30px;
-            border: none;
-            border-bottom: 1px solid #ddd;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 5px;
-            top: 12px;
-            color: #555;
-        }
-
-        .auth-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 12px;
-            width: 100%;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-            color: #666;
-        }
-
-        .divider::before, .divider::after {
+        
+        .gauge:before {
             content: "";
-            flex: 1;
-            border-bottom: 1px solid #ddd;
+            position: absolute;
+            width: 6px;
+            height: 50px;
+            background: black;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%) rotate(45deg);
+            transform-origin: bottom center;
+            transition: transform 1s ease;
         }
-
-        .divider span {
-            padding: 0 10px;
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
-
-        .social-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+        
+        .hero-title {
+            font-size: 36px;
+            margin: 20px 0 10px;
+        }
+        
+        .hero-subtitle {
+            color: #666;
             margin-bottom: 20px;
         }
-
-        .social-button {
+        
+        .download-section {
             display: flex;
             justify-content: center;
-            align-items: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            font-size: 24px;
-            color: #00C853;
-            cursor: pointer;
+            gap: 10px;
+            margin: 20px 0;
         }
-
-        .footer-text {
-            margin-top: 20px;
-        }
-
-        .footer-text a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .recover-link {
-            display: block;
-            text-align: right;
-            margin-bottom: 15px;
-            color: #4CAF50;
-            text-decoration: none;
-        }
-
-        .message {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            display: none;
-        }
-
-        .error {
-            background-color: #ebebeb;
-            color: #D32F2F;
-        }
-
-        .success {
-            background-color: #fdfdfd;
-            color: #388E3C;
-        }
-
-        /* User Info Display */
-        .user-info {
+        
+        .stats-counter {
+            display: flex;
+            justify-content: center;
             padding: 20px;
-            display: none;
+            gap: 40px;
+            color: #666;
+            font-size: 18px;
         }
-
-        .user-avatar {
+        
+        .category-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+        
+        .category-item {
+            text-align: center;
+            width: 120px;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .category-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .category-icon {
             width: 80px;
             height: 80px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        
+        .product-section {
+            background-color: #fff;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .product-section h2 {
+            color: #444;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .product-card {
+            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .product-image {
+            width: 150px;
+            height: 150px;
+            background-color: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 80px;
+        }
+        
+        .product-details {
+            flex: 1;
+        }
+        
+        .product-title {
+            font-size: 22px;
+            margin: 0 0 10px;
+            color: #333;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            background-color: #f9f9f9;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .rating-bar {
+            background-color: #eee;
+            height: 15px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .rating-fill {
             background-color: #4CAF50;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 20px;
-            color: white;
-            font-size: 36px;
+            height: 100%;
+            width: 0;
+            transition: width 1s ease-in-out;
         }
-
-        /* Category icons for demo */
-        .categories {
+        
+        .secondary-nav {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin: 40px 0;
+            justify-content: flex-end;
+            background-color: #f8f8f8;
+            padding: 10px 20px;
         }
-
-        .category {
-            text-align: center;
-            margin: 10px;
-            width: 100px;
+        
+        .search-box {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-
-        .category-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        
+        .rightmost-nav {
             background-color: #f0f0f0;
+            padding: 5px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stats-section {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .recent-tests {
+            max-width: 500px;
+            margin: 20px;
+        }
+        
+        .test-item {
+            display: flex;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .test-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .test-flag {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .test-time {
+            color: #888;
+            width: 80px;
+        }
+        
+        .test-product {
+            flex: 1;
+        }
+        
+        .test-score {
+            width: 120px;
+            text-align: right;
+        }
+        
+        .button {
+            padding: 8px 16px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background-color: #d35400;
+        }
+        
+        .search-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .view-count {
+            animation: countUp 2s ease-out;
+        }
+        
+        @keyframes countUp {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+        
+        /* Modal styles for comparison feature */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
             border-radius: 5px;
         }
-
-        .category-name {
-            margin-top: 10px;
-            font-size: 14px;
+        
+        .close-modal {
+            float: right;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .comparison-heading {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .compare-selection {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .product-dropdown {
+            width: 45%;
+            padding: 8px;
+        }
+        
+        #compareResults {
+            margin-top: 20px;
         }
     </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
+
 </head>
 <body>
-    <!-- Demo Website Navigation Bar -->
-    <div class="nav-bar">
-        <div class="nav-brand">ShopEZ</div>
-        <button class="nav-button" id="navAuthButton">SIGN IN</button>
-    </div>
+    <div id="authSidebarContainer" style="display: none;"></div>
 
 
-    <!-- Overlay for sidebar background -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Sidebar Authentication -->
-    <div class="auth-sidebar" id="authSidebar">
-        <div class="auth-header">
-            <h3>Account</h3>
-            <button class="close-button" id="closeSidebar">&times;</button>
+    <div class="header">
+        <div class="logo">ShopEZ</div>
+        <div class="user-info">
+            <div class="user-tag">
+                🔒 <span id="user-location">PHL-User</span> <span id="user-flag">🇵🇭</span>
+            </div>
+            <select id="country-select">
+                <option value="PH" selected>PH</option>
+                <option value="US">US</option>
+                <option value="UK">UK</option>
+                <option value="JP">JP</option>
+            </select>
         </div>
+    </div>
+    
+    <div class="secondary-nav">
+        <input type="text" class="search-box" id="search-input" placeholder="Search...">
+        <button class="search-button" id="search-btn">🔍</button>
+    </div>
+    
+    <div class="navigation">
+        <ul class="nav-links">
+            <li><a href="#" class="category-link" data-category="SNACKS">SNACKS</a></li>
+            <li><a href="#" class="category-link" data-category="FRUITS">FRUITS</a></li>
+            <li><a href="#" class="category-link" data-category="VEGETABLES">VEGETABLES</a></li>
+            <li><a href="#" class="category-link" data-category="DRINKS">DRINKS</a></li>
+            <li><a href="#" class="category-link" data-category="GRAINS">GRAINS</a></li>
+            <li><a href="#" class="category-link" data-category="DAIRY">DAIRY</a></li>
+            <li><a href="#" class="category-link" data-category="MEATS">MEATS</a></li>
+            <li style="margin-left: auto;"><a href="#" id="compare-btn">COMPARE</a></li>
+            <li><a href="#" id="about-btn">ABOUT</a></li>
+            <li><a href="#" onclick="showAuth()">SIGN IN</a></li>
+
+
+
+        </ul>
+    </div>
+ 
+    
+    <div class="hero">
+        <div class="gauge" id="main-gauge"></div>
         
-        <div class="auth-content">
-            <!-- Sign In Form -->
-            <div class="auth-card" id="signInForm">
-                <div class="logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="24px" height="24px">
-                        <path d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
+        <div class="hero-content">
+            <h1 class="hero-title">ShopEZ<span style="color: #999; font-size: 24px;">?</span></h1>
+            <p class="hero-subtitle">Food comparison includes its speciality</p>
+            
+            <div class="download-section">
+                <div style="background: white; padding: 8px 20px; border-radius: 4px;">
+                    👁️ <span id="view-counter" class="view-count">69,563,965</span> PCs
                 </div>
-                <h2>Sign In</h2>
-                <div id="signInMessage" class="message"></div>
-                <div class="input-group">
-                    <i>✉️</i>
-                    <input type="email" id="signInEmail" placeholder="Email">
-                </div>
-                <div class="input-group">
-                    <i>🔒</i>
-                    <input type="password" id="signInPassword" placeholder="Password">
-                </div>
-                <a href="#" class="recover-link" id="recoverPassword">Recover Password</a>
-                <button class="auth-button" id="signInButton">Sign In</button>
-                <div class="divider">
-                    <span>or</span>
-                </div>
-                <div class="social-buttons">
-                    <div class="social-button" id="googleSignIn">G</div>
-                    <div class="social-button" id="facebookSignIn">f</div>
-                </div>
-                <div class="footer-text">
-                    Don't have an account yet? <a href="#" id="showRegister">Sign Up</a>
-                </div>
+                <button class="button" id="download-btn">📥 Free Download</button>
             </div>
-
-            <!-- Register Form -->
-            <div class="auth-card" id="registerForm" style="display: none;">
-                <div class="logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="24px" height="24px">
-                        <path d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                </div>
-                <h2>Register</h2>
-                <div id="registerMessage" class="message"></div>
-                <div class="input-group">
-                    <i>👤</i>
-                    <input type="text" id="firstName" placeholder="First Name">
-                </div>
-                <div class="input-group">
-                    <i>👤</i>
-                    <input type="text" id="lastName" placeholder="Last Name">
-                </div>
-                <div class="input-group">
-                    <i>✉️</i>
-                    <input type="email" id="registerEmail" placeholder="Email">
-                </div>
-                <div class="input-group">
-                    <i>🔒</i>
-                    <input type="password" id="registerPassword" placeholder="Password">
-                </div>
-                <button class="auth-button" id="registerButton">Sign Up</button>
-                <div class="divider">
-                    <span>or</span>
-                </div>
-                <div class="social-buttons">
-                    <div class="social-button" id="googleRegister">G</div>
-                    <div class="social-button" id="facebookRegister">f</div>
-                </div>
-                <div class="footer-text">
-                    Already have an account? <a href="#" id="showSignIn">Sign In</a>
-                </div>
-            </div>
-
-            <!-- Password Recovery Form -->
-            <div class="auth-card" id="recoverForm" style="display: none;">
-                <div class="logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="24px" height="24px">
-                        <path d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                    </svg>
-                </div>
-                <h2>Recover Password</h2>
-                <div id="recoverMessage" class="message"></div>
-                <p>Enter your email address to receive a password reset link.</p>
-                <div class="input-group">
-                    <i>✉️</i>
-                    <input type="email" id="recoverEmail" placeholder="Email">
-                </div>
-                <button class="auth-button" id="sendRecoveryEmailButton">Send Recovery Email</button>
-                <div class="footer-text">
-                    <a href="#" id="backToSignIn">Back to Sign In</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- User Info (when signed in) -->
-        <div class="user-info" id="userInfo">
-            <div class="user-avatar" id="userAvatar">U</div>
-            <h3 id="userName">User Name</h3>
-            <p id="userEmail">user@example.com</p>
-            <button class="auth-button" id="signOutButton">Sign Out</button>
         </div>
     </div>
-
-    <!-- Firebase SDK scripts -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <div class="stats-counter">
+        <div><span id="products-count">2,348,459</span> Products</div>
+        <div><span id="comparisons-count">348,942,121</span> Comparisons</div>
+        <div><span id="votes-count">3,600,456</span> Votes</div>
+    </div>
+    
+    <div class="category-grid">
+        <div class="category-item" data-category="SNACKS">
+            <div class="category-icon">🍿</div>
+            <div>SNACKS</div>
+        </div>
+        <div class="category-item" data-category="FRUITS">
+            <div class="category-icon">🍎</div>
+            <div>FRUITS</div>
+        </div>
+        <div class="category-item" data-category="VEGETABLES">
+            <div class="category-icon">🥦</div>
+            <div>VEGETABLES</div>
+        </div>
+        <div class="category-item" data-category="DRINKS">
+            <div class="category-icon">🥤</div>
+            <div>DRINKS</div>
+        </div>
+        <div class="category-item" data-category="GRAINS">
+            <div class="category-icon">🌾</div>
+            <div>GRAINS</div>
+        </div>
+        <div class="category-item" data-category="DAIRY">
+            <div class="category-icon">🧀</div>
+            <div>DAIRY</div>
+        </div>
+    </div>
+    
+    <div class="product-section" id="product-section">
+        <h2>New Potato Chips</h2>
+        
+        <div class="product-card">
+            <div class="product-image">🥔</div>
+            <div class="product-details">
+                <h3 class="product-title">Lays Classic ₱120.50</h3>
+                <p>Lay's classic potato chips are around 20% lower in sodium than their corresponding kettle-cooked counterparts. Supply is readily available at most supermarkets so value for money considerations are quite favorable. Over the last five years, aggressive marketing through platforms like TV, YouTube, and social media—combined with celebrity endorsements—has solidified the brand's position in the snack market.</p>
+                
+                <div style="margin-top: 15px;">
+                    <strong>Nutrition Facts (per 100g):</strong>
+                    <table class="comparison-table">
+                        <tr>
+                            <td width="20%">Calories:</td>
+                            <td width="15%">536 kcal</td>
+                            <td width="65%">
+                                <div class="rating-bar">
+                                    <div class="rating-fill" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Fat:</td>
+                            <td>34.6g</td>
+                            <td>
+                                <div class="rating-bar">
+                                    <div class="rating-fill" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sodium:</td>
+                            <td>525mg</td>
+                            <td>
+                                <div class="rating-bar">
+                                    <div class="rating-fill" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="rightmost-nav">
+        <div class="stats-section">
+            <div>
+                <a href="#" id="current-snacks">Current Snacks</a>
+                <div><span id="foods-tested">69,563,965</span> Foods tested</div>
+            </div>
+            <div>
+                <div>Score</div>
+            </div>
+            <div>
+                <div>Rates</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="recent-tests" id="recent-tests">
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">4 secs ago</div>
+            <div class="test-product">Jack 'n Jill Potato Chips Original</div>
+            <div class="test-score">Heart healthy <span style="color: green">56%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">46 secs ago</div>
+            <div class="test-product">Pringles Original</div>
+            <div class="test-score">Fiber content <span style="color: green">72%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">47 secs ago</div>
+            <div class="test-product">Oishi Prawn Crackers</div>
+            <div class="test-score">Protein value <span style="color: orange">48%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">51 secs ago</div>
+            <div class="test-product">V-Cut Spicy BBQ</div>
+            <div class="test-score">Salt content <span style="color: red">38%</span></div>
+        </div>
+        <div class="test-item">
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">1 min ago</div>
+            <div class="test-product">Nova Country Potato</div>
+            <div class="test-score">Overall value <span style="color: green">95%</span></div>
+        </div>
+    </div>
+    
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="comparison-heading">Compare Products</h2>
+            
+            <div class="compare-selection">
+                <select id="product1" class="product-dropdown">
+                    <option value="">Select first product...</option>
+                    <option value="lays">Lays Classic</option>
+                    <option value="pringles">Pringles Original</option>
+                    <option value="jacknj">Jack 'n Jill Potato Chips</option>
+                    <option value="oishi">Oishi Prawn Crackers</option>
+                    <option value="vcut">V-Cut Spicy BBQ</option>
+                    <option value="nova">Nova Country Potato</option>
+                </select>
+                
+                <select id="product2" class="product-dropdown">
+                    <option value="">Select second product...</option>
+                    <option value="lays">Lays Classic</option>
+                    <option value="pringles">Pringles Original</option>
+                    <option value="jacknj">Jack 'n Jill Potato Chips</option>
+                    <option value="oishi">Oishi Prawn Crackers</option>
+                    <option value="vcut">V-Cut Spicy BBQ</option>
+                    <option value="nova">Nova Country Potato</option>
+                </select>
+            </div>
+            
+            <button id="runCompare" class="button">Compare Products</button>
+            
+            <div id="compareResults"></div>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAboutModal">&times;</span>
+            <h2 class="comparison-heading">About ShopEZ</h2>
+            <p>ShopEZ is a food comparison platform that helps consumers make informed decisions about their food purchases. We provide detailed nutritional information, price comparisons, and user ratings for a wide range of food products.</p>
+            <p>Our mission is to promote healthier eating habits by making nutritional information more accessible and understandable.</p>
+            <p>Founded in 2023, ShopEZ has quickly grown to become one of the most trusted food comparison platforms in the Philippines.</p>
+        </div>
+    </div>
 
     <script>
-        // Firebase configuration - Replace with your config
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+        // Product database
+        const productDatabase = {
+            snacks: [
+                {
+                    name: "Lays Classic",
+                    price: "₱120.50",
+                    image: "🥔",
+                    description: "Lay's classic potato chips are around 20% lower in sodium than their corresponding kettle-cooked counterparts. Supply is readily available at most supermarkets so value for money considerations are quite favorable. Over the last five years, aggressive marketing through platforms like TV, YouTube, and social media—combined with celebrity endorsements—has solidified the brand's position in the snack market.",
+                    nutrition: {
+                        calories: 536,
+                        fat: 34.6,
+                        sodium: 525
+                    }
+                },
+                {
+                    name: "Pringles Original",
+                    price: "₱135.75",
+                    image: "🥔",
+                    description: "Pringles Original features a unique saddle shape and uniform texture. The stackable packaging provides excellent portability and freshness protection. The product contains a mix of dehydrated potatoes and rice flour, giving it its distinctive texture and flavor profile.",
+                    nutrition: {
+                        calories: 547,
+                        fat: 36.0,
+                        sodium: 560
+                    }
+                },
+                {
+                    name: "Jack 'n Jill Potato Chips Original",
+                    price: "₱89.25",
+                    image: "🥔",
+                    description: "A local favorite, Jack 'n Jill offers a more affordable alternative to imported brands while maintaining good quality. The chips feature a thinner cut compared to Lay's, with a slightly less oily texture.",
+                    nutrition: {
+                        calories: 520,
+                        fat: 32.1,
+                        sodium: 500
+                    }
+                }
+            ],
+            fruits: [
+                {
+                    name: "Green Apple",
+                    price: "₱28.50/piece",
+                    image: "🍏",
+                    description: "Green apples are known for their crisp texture and tart flavor. They are rich in antioxidants and dietary fiber, making them a healthy snack option.",
+                    nutrition: {
+                        calories: 52,
+                        fat: 0.2,
+                        sodium: 1
+                    }
+                },
+                {
+                    name: "Banana Lakatan",
+                    price: "₱12.00/piece",
+                    image: "🍌",
+                    description: "Lakatan bananas are a popular Philippine variety known for their sweet taste and firm texture. They're an excellent source of potassium and vitamin C.",
+                    nutrition: {
+                        calories: 89,
+                        fat: 0.3,
+                        sodium: 1
+                    }
+                }
+            ],
+            vegetables: [
+                {
+                    name: "Broccoli",
+                    price: "₱85.00/kg",
+                    image: "🥦",
+                    description: "Broccoli is a nutritional powerhouse packed with vitamins, minerals, fiber, and antioxidants. It's low in calories but high in essential nutrients.",
+                    nutrition: {
+                        calories: 34,
+                        fat: 0.4,
+                        sodium: 33
+                    }
+                }
+            ],
+            drinks: [
+                {
+                    name: "Coca-Cola",
+                    price: "₱45.50/1.5L",
+                    image: "🥤",
+                    description: "The world's most popular carbonated soft drink, known for its refreshing taste and iconic branding.",
+                    nutrition: {
+                        calories: 42,
+                        fat: 0,
+                        sodium: 4
+                    }
+                }
+            ],
+            grains: [
+                {
+                    name: "Jasmine Rice",
+                    price: "₱55.00/kg",
+                    image: "🌾",
+                    description: "Jasmine rice is a long-grain variety known for its floral aroma and soft, slightly sticky texture when cooked.",
+                    nutrition: {
+                        calories: 356,
+                        fat: 0.7,
+                        sodium: 5
+                    }
+                }
+            ],
+            dairy: [
+                {
+                    name: "Anchor Full Cream Milk",
+                    price: "₱120.00/L",
+                    image: "🥛",
+                    description: "Anchor milk is sourced from New Zealand, known for its rich taste and high calcium content.",
+                    nutrition: {
+                        calories: 66,
+                        fat: 3.8,
+                        sodium: 48
+                    }
+                }
+            ]
         };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+
+        // Product comparison data
+        const productComparisonData = {
+            lays: {
+                name: "Lays Classic",
+                price: "₱120.50",
+                calories: 536,
+                fat: 34.6,
+                sodium: 525,
+                pros: ["Lower sodium than kettle chips", "Widely available", "Consistent texture"],
+                cons: ["Higher calorie content", "Less fiber than some alternatives"]
+            },
+            pringles: {
+                name: "Pringles Original",
+                price: "₱135.75",
+                calories: 547,
+                fat: 36.0,
+                sodium: 560,
+                pros: ["Uniform shape and texture", "Stackable packaging for freshness", "Long shelf life"],
+                cons: ["Higher price", "Higher sodium content", "Contains more additives"]
+            },
+            jacknj: {
+                name: "Jack 'n Jill Potato Chips",
+                price: "₱89.25",
+                calories: 520,
+                fat: 32.1,
+                sodium: 500,
+                pros: ["Lower price", "Local brand", "Slightly less fat"],
+                cons: ["Less crispy texture", "Shorter shelf life"]
+            },
+            oishi: {
+                name: "Oishi Prawn Crackers",
+                price: "₱65.00",
+                calories: 489,
+                fat: 25.3,
+                sodium: 612,
+                pros: ["Unique flavor profile", "Lower fat content", "Good protein value"],
+                cons: ["Higher sodium", "Smaller package size"]
+            },
+            vcut: {
+                name: "V-Cut Spicy BBQ",
+                price: "₱75.25",
+                calories: 510,
+                fat: 30.2,
+                sodium: 680,
+                pros: ["Distinctive ridge cut", "Bold flavor", "Satisfying crunch"],
+                cons: ["Very high sodium content", "Spice may not suit all consumers"]
+            },
+            nova: {
+                name: "Nova Country Potato",
+                price: "₱95.75",
+                calories: 490,
+                fat: 27.5,
+                sodium: 450,
+                pros: ["Best overall value", "Lower sodium", "Thicker cut for better texture"],
+                cons: ["Limited availability", "Slightly higher price than local brands"]
+            }
+        };
+
+        // Country flag mapping
+        const countryFlags = {
+            "PH": "🇵🇭",
+            "US": "🇺🇸",
+            "UK": "🇬🇧",
+            "JP": "🇯🇵"
+        };
 
         // DOM elements
-        const authSidebar = document.getElementById('authSidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const navAuthButton = document.getElementById('navAuthButton');
-        const closeSidebar = document.getElementById('closeSidebar');
-        const signOutButton = document.getElementById('signOutButton');
-        
-        const signInForm = document.getElementById('signInForm');
-        const registerForm = document.getElementById('registerForm');
-        const recoverForm = document.getElementById('recoverForm');
-        const userInfo = document.getElementById('userInfo');
-        
-        const showRegister = document.getElementById('showRegister');
-        const showSignIn = document.getElementById('showSignIn');
-        const recoverPassword = document.getElementById('recoverPassword');
-        const backToSignIn = document.getElementById('backToSignIn');
-        
-        const signInButton = document.getElementById('signInButton');
-        const registerButton = document.getElementById('registerButton');
-        const sendRecoveryEmailButton = document.getElementById('sendRecoveryEmailButton');
-        
-        const googleSignIn = document.getElementById('googleSignIn');
-        const facebookSignIn = document.getElementById('facebookSignIn');
-        const googleRegister = document.getElementById('googleRegister');
-        const facebookRegister = document.getElementById('facebookRegister');
-        
-        const signInMessage = document.getElementById('signInMessage');
-        const registerMessage = document.getElementById('registerMessage');
-        const recoverMessage = document.getElementById('recoverMessage');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const categoryLinks = document.querySelectorAll('.category-link');
+        const categoryItems = document.querySelectorAll('.category-item');
+        const productSection = document.getElementById('product-section');
+        const compareBtn = document.getElementById('compare-btn');
+        const comparisonModal = document.getElementById('comparisonModal');
+        const closeModal = document.getElementById('closeModal');
+        const aboutBtn = document.getElementById('about-btn');
+        const aboutModal = document.getElementById('aboutModal');
+        const closeAboutModal = document.getElementById('closeAboutModal');
+        const product1Select = document.getElementById('product1');
+        const product2Select = document.getElementById('product2');
+        const runCompareBtn = document.getElementById('runCompare');
+        const compareResults = document.getElementById('compareResults');
+        const countrySelect = document.getElementById('country-select');
+        const userFlag = document.getElementById('user-flag');
+        const userLocation = document.getElementById('user-location');
+        const downloadBtn = document.getElementById('download-btn');
+        const viewCounter = document.getElementById('view-counter');
+        const ratingFills = document.querySelectorAll('.rating-fill');
+        const mainGauge = document.getElementById('main-gauge');
+        const recentTests = document.getElementById('recent-tests');
+        const testItems = document.querySelectorAll('.test-item');
 
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
-        const userAvatar = document.getElementById('userAvatar');
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate the gauge on page load
+            animateGauge();
+            
+            // Animate the rating bars
+            animateRatingBars();
+            
+            // Show recent tests with animation
+            showRecentTests();
+            
+            // Simulate view counter increasing
+            startViewCounter();
+        });
 
-        // Check if user is already logged in
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // User is signed in
-                signInForm.style.display = 'none';
-                registerForm.style.display = 'none';
-                recoverForm.style.display = 'none';
-                userInfo.style.display = 'block';
-                
-                // Update user info display
-                updateUserInfo(user);
-                
-                // Update nav button
-                navAuthButton.textContent = 'ACCOUNT';
-            } else {
-                // User is signed out
-                signInForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                recoverForm.style.display = 'none';
-                userInfo.style.display = 'none';
-                
-                // Update nav button
-                navAuthButton.textContent = 'SIGN IN';
+        // Search functionality
+        searchBtn.addEventListener('click', function() {
+            performSearch();
+        });
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
             }
         });
 
-        // Update user info in sidebar
-        function updateUserInfo(user) {
-            // Get user data from Firestore
-            db.collection('users').doc(user.uid).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        userName.textContent = userData.firstName + ' ' + userData.lastName;
-                        userAvatar.textContent = userData.firstName.charAt(0).toUpperCase();
-                    } else {
-                        // If no document exists, use data from auth
-                        userName.textContent = user.displayName || 'User';
-                        userAvatar.textContent = (user.displayName ? user.displayName.charAt(0) : 'U').toUpperCase();
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            if (searchTerm === '') return;
+            
+            // Simple search implementation
+            let found = false;
+            
+            for (const category in productDatabase) {
+                const products = productDatabase[category];
+                
+                for (const product of products) {
+                    if (product.name.toLowerCase().includes(searchTerm)) {
+                        // Product found, display it
+                        displayProduct(product);
+                        found = true;
+                        break;
                     }
-                    userEmail.textContent = user.email;
-                })
-                .catch((error) => {
-                    console.error("Error getting user data:", error);
-                    // Fallback to auth data
-                    userName.textContent = user.displayName || 'User';
-                    userEmail.textContent = user.email;
-                    userAvatar.textContent = (user.displayName ? user.displayName.charAt(0) : 'U').toUpperCase();
-                });
+                }
+                
+                if (found) break;
+            }
+            
+            if (!found) {
+                alert(`No products found matching "${searchInput.value}"`);
+            }
+            
+            // Clear search field
+            searchInput.value = '';
         }
 
-        // Show message function
-        function showMessage(element, message, type) {
-            element.textContent = message;
-            element.className = `message ${type}`;
-            element.style.display = 'block';
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, 5000);
-        }
+        // Category navigation
+        categoryLinks.forEach(link => {link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const category = this.getAttribute('data-category');
+            displayCategory(category);
+        });
+    });
 
-        // Toggle sidebar function
-        function toggleSidebar() {
-            authSidebar.classList.toggle('active');
-            sidebarOverlay.classList.toggle('active');
-        }
+    // Category grid navigation
+    categoryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            displayCategory(category);
+        });
+    });
 
-        // Open sidebar
-        navAuthButton.addEventListener('click', toggleSidebar);
+    function displayCategory(category) {
+        const categoryData = productDatabase[category.toLowerCase()];
         
-        // Close sidebar
-        closeSidebar.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
-
-        // Form toggle functions
-        showRegister.addEventListener('click', () => {
-            signInForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            recoverForm.style.display = 'none';
+        if (!categoryData || categoryData.length === 0) {
+            productSection.innerHTML = `
+                <h2>${category}</h2>
+                <p>No products available in this category at the moment.</p>
+            `;
+            return;
+        }
+        
+        let productsHTML = `<h2>${category}</h2>`;
+        
+        categoryData.forEach(product => {
+            productsHTML += `
+                <div class="product-card">
+                    <div class="product-image">${product.image}</div>
+                    <div class="product-details">
+                        <h3 class="product-title">${product.name} ${product.price}</h3>
+                        <p>${product.description}</p>
+                        
+                        <div style="margin-top: 15px;">
+                            <strong>Nutrition Facts (per 100g):</strong>
+                            <table class="comparison-table">
+                                <tr>
+                                    <td width="20%">Calories:</td>
+                                    <td width="15%">${product.nutrition.calories} kcal</td>
+                                    <td width="65%">
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" style="width: 0%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Fat:</td>
+                                    <td>${product.nutrition.fat}g</td>
+                                    <td>
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" style="width: 0%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Sodium:</td>
+                                    <td>${product.nutrition.sodium}mg</td>
+                                    <td>
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" style="width: 0%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
         });
-
-        showSignIn.addEventListener('click', () => {
-            signInForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'none';
-        });
-
-        recoverPassword.addEventListener('click', () => {
-            signInForm.style.display = 'none';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'block';
-        });
-
-        backToSignIn.addEventListener('click', () => {
-            signInForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            recoverForm.style.display = 'none';
-        });
-
-        // Sign out button
-        signOutButton.addEventListener('click', () => {
-            auth.signOut().then(() => {
-                // Sign-out successful.
-                signInForm.style.display = 'block';
-                userInfo.style.display = 'none';
-                navAuthButton.textContent = 'SIGN IN';
-            }).catch((error) => {
-                // An error happened.
-                console.error('Sign out error:', error);
+        
+        productSection.innerHTML = productsHTML;
+        
+        // Animate the new rating bars
+        setTimeout(() => {
+            const newRatingFills = document.querySelectorAll('.rating-fill');
+            newRatingFills.forEach((fill, index) => {
+                const percentages = [75, 80, 60]; // Default percentages for calories, fat, sodium
+                setTimeout(() => {
+                    fill.style.width = percentages[index % 3] + '%';
+                }, 100 * index);
             });
-        });
+        }, 100);
+    }
 
-        // Sign In functionality
-        signInButton.addEventListener('click', () => {
-            const email = document.getElementById('signInEmail').value;
-            const password = document.getElementById('signInPassword').value;
-
-            if (!email || !password) {
-                showMessage(signInMessage, 'Please fill in all fields', 'error');
-                return;
-            }
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Signed in
-                    showMessage(signInMessage, 'Successfully signed in!', 'success');
-                    setTimeout(() => {
-                        toggleSidebar(); // Close the sidebar after successful login
-                    }, 1000);
-                })
-                .catch((error) => {
-                    const errorMessage = error.message;
-                    showMessage(signInMessage, errorMessage, 'error');
-                });
-        });
-
-        // Register functionality
-        registerButton.addEventListener('click', () => {
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-
-            if (!firstName || !lastName || !email || !password) {
-                showMessage(registerMessage, 'Please fill in all fields', 'error');
-                return;
-            }
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Signed up
-                    const user = userCredential.user;
+    function displayProduct(product) {
+        let productHTML = `
+            <h2>${product.name}</h2>
+            <div class="product-card">
+                <div class="product-image">${product.image}</div>
+                <div class="product-details">
+                    <h3 class="product-title">${product.name} ${product.price}</h3>
+                    <p>${product.description}</p>
                     
-                    // Store additional user info in Firestore
-                    return db.collection('users').doc(user.uid).set({
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        createdAt: new Date()
-                    }).then(() => {
-                        showMessage(registerMessage, 'Account created successfully!', 'success');
-                        setTimeout(() => {
-                            toggleSidebar(); // Close the sidebar after successful registration
-                        }, 1000);
-                    });
-                })
-                .catch((error) => {
-                    const errorMessage = error.message;
-                    showMessage(registerMessage, errorMessage, 'error');
-                });
-        });
+                    <div style="margin-top: 15px;">
+                        <strong>Nutrition Facts (per 100g):</strong>
+                        <table class="comparison-table">
+                            <tr>
+                                <td width="20%">Calories:</td>
+                                <td width="15%">${product.nutrition.calories} kcal</td>
+                                <td width="65%">
+                                    <div class="rating-bar">
+                                        <div class="rating-fill" style="width: 0%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Fat:</td>
+                                <td>${product.nutrition.fat}g</td>
+                                <td>
+                                    <div class="rating-bar">
+                                        <div class="rating-fill" style="width: 0%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sodium:</td>
+                                <td>${product.nutrition.sodium}mg</td>
+                                <td>
+                                    <div class="rating-bar">
+                                        <div class="rating-fill" style="width: 0%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        productSection.innerHTML = productHTML;
+        
+        // Animate the rating bars for the displayed product
+        setTimeout(() => {
+            const newRatingFills = document.querySelectorAll('.rating-fill');
+            const caloriePercentage = Math.min(100, (product.nutrition.calories / 600) * 100);
+            const fatPercentage = Math.min(100, (product.nutrition.fat / 40) * 100);
+            const sodiumPercentage = Math.min(100, (product.nutrition.sodium / 800) * 100);
+            
+            const percentages = [caloriePercentage, fatPercentage, sodiumPercentage];
+            
+            newRatingFills.forEach((fill, index) => {
+                setTimeout(() => {
+                    fill.style.width = percentages[index] + '%';
+                }, 100 * index);
+            });
+        }, 100);
+    }
 
-        // Password recovery functionality
-        sendRecoveryEmailButton.addEventListener('click', () => {
-            const email = document.getElementById('recoverEmail').value;
+    // Comparison modal functionality
+    compareBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        comparisonModal.style.display = 'block';
+    });
 
-            if (!email) {
-                showMessage(recoverMessage, 'Please enter an email address', 'error');
-                return;
-            }
+    closeModal.addEventListener('click', function() {
+        comparisonModal.style.display = 'none';
+    });
 
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    showMessage(recoverMessage, 'Password reset email sent!', 'success');
+    // About modal functionality
+    aboutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        aboutModal.style.display = 'block';
+    });
+
+    closeAboutModal.addEventListener('click', function() {
+        aboutModal.style.display = 'none';
+    });
+
+    // Close modals when clicking outside
+    window.addEventListener('click', function(e) {
+        if (e.target === comparisonModal) {
+            comparisonModal.style.display = 'none';
+        }
+        if (e.target === aboutModal) {
+            aboutModal.style.display = 'none';
+        }
+    });
+
+    // Product comparison functionality
+    runCompareBtn.addEventListener('click', function() {
+        const product1Id = product1Select.value;
+        const product2Id = product2Select.value;
+        
+        if (!product1Id || !product2Id) {
+            alert('Please select two products to compare');
+            return;
+        }
+        
+        if (product1Id === product2Id) {
+            alert('Please select two different products');
+            return;
+        }
+        
+        const product1 = productComparisonData[product1Id];
+        const product2 = productComparisonData[product2Id];
+        
+        // Generate comparison results
+        let comparisonHTML = `
+            <h3>Comparison Results</h3>
+            <table class="comparison-table" style="margin-top: 20px;">
+                <tr>
+                    <th>Feature</th>
+                    <th>${product1.name}</th>
+                    <th>${product2.name}</th>
+                </tr>
+                <tr>
+                    <td>Price</td>
+                    <td>${product1.price}</td>
+                    <td>${product2.price}</td>
+                </tr>
+                <tr>
+                    <td>Calories (per 100g)</td>
+                    <td>${product1.calories} kcal</td>
+                    <td>${product2.calories} kcal</td>
+                </tr>
+                <tr>
+                    <td>Fat (per 100g)</td>
+                    <td>${product1.fat}g</td>
+                    <td>${product2.fat}g</td>
+                </tr>
+                <tr>
+                    <td>Sodium (per 100g)</td>
+                    <td>${product1.sodium}mg</td>
+                    <td>${product2.sodium}mg</td>
+                </tr>
+            </table>
+            
+            <div style="display: flex; margin-top: 20px;">
+                <div style="flex: 1; margin-right: 10px;">
+                    <h4>${product1.name} Pros:</h4>
+                    <ul>
+                        ${product1.pros.map(pro => `<li>${pro}</li>`).join('')}
+                    </ul>
+                    <h4>${product1.name} Cons:</h4>
+                    <ul>
+                        ${product1.cons.map(con => `<li>${con}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div style="flex: 1; margin-left: 10px;">
+                    <h4>${product2.name} Pros:</h4>
+                    <ul>
+                        ${product2.pros.map(pro => `<li>${pro}</li>`).join('')}
+                    </ul>
+                    <h4>${product2.name} Cons:</h4>
+                    <ul>
+                        ${product2.cons.map(con => `<li>${con}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+            
+            <h4 style="margin-top: 20px;">Recommendation:</h4>
+            <p>${getRecommendation(product1, product2)}</p>
+        `;
+        
+        compareResults.innerHTML = comparisonHTML;
+    });
+
+    function getRecommendation(product1, product2) {
+        // Simple recommendation logic
+        const healthScore1 = calculateHealthScore(product1);
+        const healthScore2 = calculateHealthScore(product2);
+        
+        if (healthScore1 > healthScore2) {
+            return `For overall nutritional value, <strong>${product1.name}</strong> is recommended with a health score of ${healthScore1.toFixed(1)}/10 compared to ${product2.name}'s ${healthScore2.toFixed(1)}/10.`;
+        } else if (healthScore2 > healthScore1) {
+            return `For overall nutritional value, <strong>${product2.name}</strong> is recommended with a health score of ${healthScore2.toFixed(1)}/10 compared to ${product1.name}'s ${healthScore1.toFixed(1)}/10.`;
+        } else {
+            return `Both products have similar nutritional values with a health score of ${healthScore1.toFixed(1)}/10. Consider your taste preference or budget.`;
+        }
+    }
+
+    function calculateHealthScore(product) {
+        // Simple health score calculation (lower is better for these metrics)
+        const calorieScore = 10 - ((product.calories / 600) * 10);
+        const fatScore = 10 - ((product.fat / 40) * 10);
+        const sodiumScore = 10 - ((product.sodium / 800) * 10);
+        
+        return (calorieScore + fatScore + sodiumScore) / 3;
+    }
+
+    // Country selection functionality
+    countrySelect.addEventListener('change', function() {
+        const selectedCountry = this.value;
+        userFlag.textContent = countryFlags[selectedCountry];
+        userLocation.textContent = `${selectedCountry}-User`;
+        
+        // Simulate changing product prices based on country
+        alert(`Prices updated to ${selectedCountry} currency`);
+    });
+
+    // Download button functionality
+    downloadBtn.addEventListener('click', function() {
+        alert('Downloading ShopEZ App...');
+        
+        // Simulate download
+        const downloadProgress = document.createElement('div');
+        downloadProgress.style.position = 'fixed';
+        downloadProgress.style.bottom = '20px';
+        downloadProgress.style.right = '20px';
+        downloadProgress.style.backgroundColor = 'white';
+        downloadProgress.style.padding = '10px';
+        downloadProgress.style.borderRadius = '5px';
+        downloadProgress.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        downloadProgress.textContent = 'Download: 0%';
+        
+        document.body.appendChild(downloadProgress);
+        
+        let progress = 0;
+        const downloadInterval = setInterval(() => {
+            progress += 10;
+            downloadProgress.textContent = `Download: ${progress}%`;
+            
+            if (progress >= 100) {
+                clearInterval(downloadInterval);
+                setTimeout(() => {
+                    downloadProgress.textContent = 'Download Complete!';
                     setTimeout(() => {
-                        signInForm.style.display = 'block';
-                        recoverForm.style.display = 'none';
-                    }, 3000);
-                })
-                .catch((error) => {
-                    const errorMessage = error.message;
-                    showMessage(recoverMessage, errorMessage, 'error');
-                });
-        });
+                        document.body.removeChild(downloadProgress);
+                    }, 2000);
+                }, 500);
+            }
+        }, 300);
+    });
 
-        // Google Sign In
-        googleSignIn.addEventListener('click', () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    // Check if this is a new user
-                    const isNewUser = result.additionalUserInfo.isNewUser;
-                    if (isNewUser) {
-                        // Store user info in Firestore
-                        return db.collection('users').doc(result.user.uid).set({
-                            firstName: result.user.displayName.split(' ')[0] || '',
-                            lastName: result.user.displayName.split(' ')[1] || '',
-                            email: result.user.email,
-                            createdAt: new Date()
-                        }).then(() => {
-                            setTimeout(() => {
-                                toggleSidebar(); // Close sidebar
-                            }, 1000);
-                        });
-                    } else {
-                        setTimeout(() => {
-                            toggleSidebar(); // Close sidebar
-                        }, 1000);
-                    }
-                })
-                .catch((error) => {
-                    showMessage(signInMessage, error.message, 'error');
-                });
-        });
+    // Animate gauge needle
+    function animateGauge() {
+        let rotation = 45; // Starting position
+        const gaugeElement = document.querySelector('.gauge:before');
+        
+        setInterval(() => {
+            rotation = Math.random() * 90; // Random rotation between 0 and 90 degrees
+            mainGauge.style.setProperty('--rotation', `${rotation}deg`);
+            document.documentElement.style.setProperty('--gauge-rotation', `${rotation}deg`);
+            
+            // Apply the rotation directly using JavaScript since CSS variables may not work on pseudo-elements
+            const gaugeStyles = document.createElement('style');
+            gaugeStyles.innerHTML = `.gauge:before { transform: translate(-50%, -100%) rotate(${rotation}deg) !important; }`;
+            document.head.appendChild(gaugeStyles);
+            
+            setTimeout(() => {
+                document.head.removeChild(gaugeStyles);
+            }, 1000);
+        }, 3000);
+    }
 
-        // Facebook Sign In
-        facebookSignIn.addEventListener('click', () => {
-            const provider = new firebase.auth.FacebookAuthProvider();
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    // Check if this is a new user
-                    const isNewUser = result.additionalUserInfo.isNewUser;
-                    if (isNewUser) {
-                        // Store user info in Firestore
-                        return db.collection('users').doc(result.user.uid).set({
-                            firstName: result.user.displayName.split(' ')[0] || '',
-                            lastName: result.user.displayName.split(' ')[1] || '',
-                            email: result.user.email,
-                            createdAt: new Date()
-                        }).then(() => {
-                            setTimeout(() => {
-                                toggleSidebar(); // Close sidebar
-                            }, 1000);
-                        });
-                    } else {
-                        setTimeout(() => {
-                            toggleSidebar(); // Close sidebar
-                        }, 1000);
-                    }
-                })
-                .catch((error) => {
-                    showMessage(signInMessage, error.message, 'error');
-                });
+    // Animate rating bars
+    function animateRatingBars() {
+        ratingFills.forEach((fill, index) => {
+            const percentages = [75, 80, 60]; // Default percentages for calories, fat, sodium
+            setTimeout(() => {
+                fill.style.width = percentages[index] + '%';
+            }, 500 + (100 * index));
         });
+    }
 
-        // Google Register (same as sign in but clearer UX)
-        googleRegister.addEventListener('click', () => {
-            googleSignIn.click();
+    // Show recent tests with animation
+    function showRecentTests() {
+        testItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, 300 * index);
         });
+        
+        // Add new test items periodically
+        setInterval(addNewTestItem, 15000);
+    }
 
-        // Facebook Register (same as sign in but clearer UX)
-        facebookRegister.addEventListener('click', () => {
-            facebookSignIn.click();
+    // Simulate increasing view counter
+    function startViewCounter() {
+        const startCount = parseInt(viewCounter.textContent.replace(/,/g, ''));
+        let currentCount = startCount;
+        
+        setInterval(() => {
+            currentCount += Math.floor(Math.random() * 10) + 1;
+            viewCounter.textContent = currentCount.toLocaleString();
+            viewCounter.classList.add('view-count');
+            
+            setTimeout(() => {
+                viewCounter.classList.remove('view-count');
+            }, 1000);
+        }, 5000);
+    }
+
+    // Add new test item
+    function addNewTestItem() {
+        const products = [
+            "Tostitos Tortilla Chips",
+            "Doritos Nacho Cheese",
+            "Cheetos Crunchy",
+            "Chippy Barbecue",
+            "Mang Juan Chicharon",
+            "Roller Coaster Potato Rings"
+        ];
+        
+        const metrics = [
+            "Heart healthy",
+            "Fiber content",
+            "Protein value",
+            "Salt content",
+            "Overall value",
+            "Fat content"
+        ];
+        
+        const randomProduct = products[Math.floor(Math.random() * products.length)];
+        const randomMetric = metrics[Math.floor(Math.random() * metrics.length)];
+        const randomScore = Math.floor(Math.random() * 100) + 1;
+        
+        let scoreColor;
+        if (randomScore >= 70) scoreColor = "green";
+        else if (randomScore >= 50) scoreColor = "orange";
+        else scoreColor = "red";
+        
+        const newTestItem = document.createElement('div');
+        newTestItem.className = 'test-item';
+        newTestItem.innerHTML = `
+            <div class="test-flag">🇵🇭</div>
+            <div class="test-time">Just now</div>
+            <div class="test-product">${randomProduct}</div>
+            <div class="test-score">${randomMetric} <span style="color: ${scoreColor}">${randomScore}%</span></div>
+        `;
+        
+        // Update test item times
+        const testItems = document.querySelectorAll('.test-item');
+        testItems.forEach(item => {
+            const timeElement = item.querySelector('.test-time');
+            const currentTime = timeElement.textContent;
+            
+            if (currentTime === 'Just now') {
+                timeElement.textContent = '5 secs ago';
+            } else if (currentTime === '5 secs ago') {
+                timeElement.textContent = '10 secs ago';
+            } else if (currentTime === '10 secs ago') {
+                timeElement.textContent = '30 secs ago';
+            } else if (currentTime === '30 secs ago') {
+                timeElement.textContent = '1 min ago';
+            } else if (currentTime.includes('min')) {
+                const mins = parseInt(currentTime);
+                if (mins < 60) {
+                    timeElement.textContent = (mins + 1) + ' min ago';
+                } else {
+                    const hours = Math.floor(mins / 60);
+                    timeElement.textContent = hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
+                }
+            }
         });
-    </script>
+        
+        // Add the new item at the top
+        recentTests.insertBefore(newTestItem, recentTests.firstChild);
+        
+        // Remove the oldest item if there are more than 5
+        if (recentTests.children.length > 5) {
+            recentTests.removeChild(recentTests.lastChild);
+        }
+        
+        // Animate the new item
+        setTimeout(() => {
+            newTestItem.classList.add('visible');
+        }, 100);
+    }
+
+    // Generate realistic product data on demand
+    window.addEventListener('keydown', function(e) {
+        // Easter egg: Press 'G' to generate random product data
+        if (e.key === 'g' || e.key === 'G') {
+            generateRandomProduct();
+        }
+    });
+
+    function generateRandomProduct() {
+        const productTypes = ['Chips', 'Crackers', 'Popcorn', 'Nuts', 'Pretzels'];
+        const brands = ['Lays', 'Jack n Jill', 'Oishi', 'Nova', 'Pringles', 'V-Cut', 'Tostitos'];
+        const flavors = ['Original', 'Cheese', 'BBQ', 'Sour Cream', 'Spicy', 'Ranch', 'Salt & Vinegar'];
+        
+        const randomType = productTypes[Math.floor(Math.random() * productTypes.length)];
+        const randomBrand = brands[Math.floor(Math.random() * brands.length)];
+        const randomFlavor = flavors[Math.floor(Math.random() * flavors.length)];
+        
+        const productName = `${randomBrand} ${randomType} ${randomFlavor}`;
+        const price = `₱${(Math.random() * 150 + 50).toFixed(2)}`;
+        
+        const calories = Math.floor(Math.random() * 200 + 400);
+        const fat = (Math.random() * 20 + 20).toFixed(1);
+        const sodium = Math.floor(Math.random() * 300 + 300);
+        
+        const product = {
+            name: productName,
+            price: price,
+            image: '🥨',
+            description: `${productName} offers a delicious ${randomFlavor.toLowerCase()} flavor with a satisfying crunch. Perfect for snacking any time of day.`,
+            nutrition: {
+                calories: calories,
+                fat: parseFloat(fat),
+                sodium: sodium
+            }
+        };
+        
+        displayProduct(product);
+        alert(`Generated random product: ${productName}`);
+    }
+
+   
+    function showAuth() {
+        document.getElementById("authSidebarContainer").style.display = "block";
+    }
+    
+    function initAuthSidebar(config) {
+        const {
+            apiKey,
+            authDomain,
+            projectId,
+            storageBucket,
+            messagingSenderId,
+            appId,
+            sidebarContainerId = "authSidebarContainer",
+            onSignInSuccess,
+            onSignOutSuccess
+        } = config;
+    
+        const firebaseConfig = { apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId };
+        firebase.initializeApp(firebaseConfig);
+    
+        const auth = firebase.auth();
+        const ui = new firebaseui.auth.AuthUI(auth);
+    
+        const container = document.getElementById(sidebarContainerId);
+        container.innerHTML = `
+            <div id="firebaseui-auth-container"></div>
+            <button id="signOutButton" class="button" style="display:none; margin-top: 10px;">Sign Out</button>
+        `;
+    
+        ui.start('#firebaseui-auth-container', {
+            signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+            callbacks: {
+                signInSuccessWithAuthResult: function(authResult) {
+                    document.getElementById("signOutButton").style.display = "block";
+                    if (onSignInSuccess) onSignInSuccess(authResult.user);
+                    return false;
+                }
+            }
+        });
+    
+        document.getElementById("signOutButton").onclick = function () {
+            auth.signOut().then(() => {
+                document.getElementById("signOutButton").style.display = "none";
+                if (onSignOutSuccess) onSignOutSuccess();
+            });
+        };
+    }
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        initAuthSidebar({
+            apiKey: "AIzaSyD3N0CojTZNWCCryJk-qjV549LHeUgwwcM",
+            authDomain: "shopez-2ae00.firebaseapp.com",
+            projectId: "shopez-2ae00",
+            storageBucket: "shopez-2ae00.firebasestorage.app",
+            messagingSenderId: "496779271582",
+            appId: "1:496779271582:web:a6763817ef8093623e8a8f",
+            onSignInSuccess: (user) => console.log("Signed in:", user.email),
+            onSignOutSuccess: () => console.log("Signed out.")
+        });
+    });
+    
+    
+
+</script>
+
+  </div>
+  
+
 </body>
 </html>
