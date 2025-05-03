@@ -557,39 +557,37 @@
         </div>
     </div>
     
-    <!-- Comparison Modal -->
-    <div id="comparisonModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
-            <h2 class="comparison-heading">Compare Products</h2>
-            
-            <div class="compare-selection">
-                <select id="product1" class="product-dropdown">
-                    <option value="">Select first product...</option>
-                    <option value="lays">Lays Classic</option>
-                    <option value="pringles">Pringles Original</option>
-                    <option value="jacknj">Jack 'n Jill Potato Chips</option>
-                    <option value="oishi">Oishi Prawn Crackers</option>
-                    <option value="vcut">V-Cut Spicy BBQ</option>
-                    <option value="nova">Nova Country Potato</option>
-                </select>
-                
-                <select id="product2" class="product-dropdown">
-                    <option value="">Select second product...</option>
-                    <option value="lays">Lays Classic</option>
-                    <option value="pringles">Pringles Original</option>
-                    <option value="jacknj">Jack 'n Jill Potato Chips</option>
-                    <option value="oishi">Oishi Prawn Crackers</option>
-                    <option value="vcut">V-Cut Spicy BBQ</option>
-                    <option value="nova">Nova Country Potato</option>
-                </select>
-            </div>
-            
-            <button id="runCompare" class="button">Compare Products</button>
-            
-            <div id="compareResults"></div>
-        </div>
+   <!-- Comparison Modal -->
+<div id="comparisonModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <h2 class="comparison-heading">Compare Products</h2>
+        
+        <!-- Button to load comparison content -->
+        <button id="compareButton" onclick="loadComparison()" class="button">
+            Compare Products
+        </button>
+        
+        <!-- Iframe to load comparison content -->
+        <iframe id="compareFrame" style="width:100%; height:600px; border:none; margin-top:40px;"></iframe>
     </div>
+</div>
+
+<script>
+    function loadComparison() {
+        // Hide the button after it's clicked
+        document.getElementById('compareButton').style.display = 'none';
+        
+        // Load the comparison content into the iframe
+        document.getElementById('compareFrame').src = 'new_compare.html';
+    }
+
+    // Optional: You can add validation for selected products here if needed
+    document.getElementById("runCompare").addEventListener("click", function() {
+        window.location.href = "new_compare.html";
+    });
+</script>
+
     
     <!-- About Modal -->
     <div id="aboutModal" class="modal">
