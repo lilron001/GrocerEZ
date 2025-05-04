@@ -1,4 +1,4 @@
-// Main JavaScript for ShopEZ
+// Main JavaScript for GrocerEZ
 
 // Common DOM Elements
 let searchInput, searchBtn, compareBtn, comparisonModal, closeModalBtn, aboutBtn, aboutModal;
@@ -141,7 +141,7 @@ function setupEventListeners() {
     // Download button functionality
     if (downloadBtn) {
         downloadBtn.addEventListener('click', function() {
-            alert('Downloading ShopEZ App...');
+            alert('Downloading GrocerEZ App...');
             
             // Simulate download
             const downloadProgress = document.createElement('div');
@@ -456,9 +456,9 @@ function initFirebase() {
     // Initialize Firebase configuration
     const firebaseConfig = {
         apiKey: "AIzaSyD3N0CojTZNWCCryJk-qjV549LHeUgwwcM",
-        authDomain: "shopez-2ae00.firebaseapp.com",
-        projectId: "shopez-2ae00",
-        storageBucket: "shopez-2ae00.firebasestorage.app",
+        authDomain: "GrocerEZ-2ae00.firebaseapp.com",
+        projectId: "GrocerEZ-2ae00",
+        storageBucket: "GrocerEZ-2ae00.firebasestorage.app",
         messagingSenderId: "496779271582",
         appId: "1:496779271582:web:a6763817ef8093623e8a8f"
     };
