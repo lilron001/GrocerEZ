@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrocerEZ - Snacks</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cart_styles.css">
+    <link rel="icon" type="image/png" href="assets/grocerEZ_icon.png">
+
+    <!-- Use Firebase v8 (non-module) to avoid import/export errors -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Firebase UI -->
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div id="authSidebarContainer" style="display: none;"></div>
+
+    <header>
+         <a href="index.html">
+            <div class="logo"><img src="assets/grocerEZ_logo.png" alt="GrocerEZ" class="logo-img"></div>
+        </a>
+        <div class="user-info">
+            <div class="user-tag">
+                🔒 <span id="user-location">PHL-User</span> <span id="user-flag">🇵🇭</span>
+            </div>
+            <select id="country-select">
+                <option value="PH" selected>PH</option>
+                <option value="US">US</option>
+                <option value="UK">UK</option>
+                <option value="JP">JP</option>
+            </select>
+        </div>
+        <input type="search" class="search-bar" id="search-input" placeholder="Search...">
+    </header>
+    
+    <nav>
+        <div class="nav-links">
+            <a href="fruits.html" class="btn" id="fruits-link">FRUITS</a>
+            <a href="chips.html" class="btn" id="chips-link">CHIPS</a>
+            <a href="vegetables.html" class="btn" id="vegetables-link">VEGETABLES</a>
+            <a href="beverages.html" class="btn" id="beverages-link">BEVERAGES</a>
+            <a href="dairy.html" class="btn" id="dairy-link">DAIRY</a>
+            <a href="snacks.html" class="btn" id="snacks-link">SNACKS</a>
+            <a href="meats.html" class="btn" id="meats-link">MEATS</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#" id="compare-btn">COMPARE</a>
+            <a href="#" id="about-btn">ABOUT</a>
+            <a href="#" id="signin-btn">SIGN IN</a>
+        </div>
+    </nav>
+    
+    <div class="banner">
+        <h2 class="banner-title">The Best Healthy Snacks</h2>
+        <div class="ratings-bar">USER RATINGS - TASTE & NUTRITION</div>
+    </div>
+    
+    <div class="product-section">
+        <div class="product-header">
+            <div class="product-info">
+                <div>
+                    <div class="product-name">Nature Bites</div>
+                    <div class="product-title" id="productTitle">Superfood Trail Mix</div>
+                </div>
+            </div>
+            <div class="product-actions">
+                <a href="#" class="action-button">
+                    <span>🛒</span>
+                    <span>ADD TO CART</span>
+                </a>
+                <a href="#" class="action-button">
+                    <span>✓</span>
+                    <span>COMPARE</span>
+                </a>
+            </div>
+        </div>
+    
+        <div class="stats">
+            <div>NUTRITIONAL SCORE (86,227)</div>
+            <div>MKT (3.8%)</div>
+            <div>REVIEWS</div>
+            <div>₱120.00/200g</div>
+        </div>
+    
+        <div class="score-section">
+            <div class="score-display">
+                <div class="score-arrows">▲</div>
+                <div class="score-value" id="scoreValue">87</div>
+                <div class="score-base" id="scoreBase">10.000</div>
+                <div class="score-arrows">▼</div>
+            </div>
+    
+            <img src="Snack_Images/plain_snack.jpg" alt="Nature Bites Superfood Trail Mix" class="product-image" id="productImage">
+    
+            <div class="metrics" id="metricsSection">
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Nutritional Balance</span>
+                        <span class="metric-positive">+79%</span>
+                    </div>
+                    <div class="metric-details">Protein content +65%, Healthy fats +89%, Fiber +83%, Antioxidants +79%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Energy Sustenance</span>
+                        <span class="metric-positive">+71%</span>
+                    </div>
+                    <div class="metric-details">Low glycemic index +85%, Energy curve +76%, Satiety +67%, Digestion -9%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Taste & Texture</span>
+                        <span class="metric-positive">+62%</span>
+                    </div>
+                    <div class="metric-details">Flavor variety +73%, Crunch factor +58%, Natural sweetness +64%, Mouthfeel +53%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Value & Availability</span>
+                        <span class="metric-negative">-18%</span>
+                    </div>
+                    <div class="metric-details">User Rating +65%, Market Share +28%, Price -47%, Distribution -24%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Ingredient Quality</span>
+                        <span class="metric-positive">+81%</span>
+                    </div>
+                    <div class="metric-details">Organic ingredients +88%, No preservatives +95%, Non-GMO +90%, Locally sourced +52%</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="product-footer">
+            <div>Production date: April 12, 2025. Source: Mix of local and imported superfoods, packaged in Laguna.</div>
+            
+            <div class="variants">
+                <button class="variant-button" onclick="updateProductInfo('classic')">Classic Blend</button>
+                <button class="variant-button" onclick="updateProductInfo('tropical')">Tropical Mix</button>
+                <button class="variant-button" onclick="updateProductInfo('energy')">Energy Boost</button>
+                <button class="variant-button" onclick="updateProductInfo('protein')">Protein Plus</button>
+                <button class="variant-button" onclick="updateProductInfo('lowsugar')">Low Sugar</button>
+                <button class="variant-button" onclick="updateProductInfo('omega')">Omega Rich</button>
+                <button class="variant-button" onclick="updateProductInfo('antioxidant')">Antioxidant Blend</button>
+                <button class="variant-button" onclick="updateProductInfo('keto')">Keto Mix</button>
+            </div>
+            
+            <div>▶ Why natural trail mix beats processed snacks</div>
+        </div>
+    
+        <div class="benchmark-section">
+            <span> Average RATING: 175%</span>
+            <span class="benchmark-rank">(3<sup>rd</sup> of 195)</span>
+            <span>ℹ️</span>
+        </div>
+        
+        <div class="user-benchmark-info">
+            Based on 86,227 user taste and nutrition ratings. Product: Superfood Trail Mix by Nature Bites
+        </div>
+    
+        <script src="snack_variants.js"></script>
+    </div>
+    
+   
+    
+
+        <div class="thumbnail-grid">
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Classic Blend" class="thumbnail-img">
+                <div class="thumbnail-name">Classic Blend</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Tropical Mix" class="thumbnail-img">
+                <div class="thumbnail-name">Tropical Mix</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Energy Boost" class="thumbnail-img">
+                <div class="thumbnail-name">Energy Boost</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Protein Plus" class="thumbnail-img">
+                <div class="thumbnail-name">Protein Plus</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Low Sugar" class="thumbnail-img">
+                <div class="thumbnail-name">Low Sugar</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Omega Rich" class="thumbnail-img">
+                <div class="thumbnail-name">Omega Rich</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Antioxidant Blend" class="thumbnail-img">
+                <div class="thumbnail-name">Antioxidant Blend</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Keto Mix" class="thumbnail-img">
+                <div class="thumbnail-name">Keto Mix</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Berry Blast" class="thumbnail-img">
+                <div class="thumbnail-name">Berry Blast</div>
+            </div>
+        </div>
+
+        <div class="alternatives-section">
+            <select class="compare-dropdown">
+                <option>Compare Alternatives</option>
+            </select>
+            <input type="search" class="compare-dropdown" placeholder="Search...">
+            
+            <div class="compare-results">
+                <div class="compare-header">** GROUP AVERAGE (7 HIGHEST-VOTED) **</div>
+                <div class="compare-item">
+                    <span>1. KIND Dark Chocolate Nut Bar • 185%</span>
+                    <span>₱95.00/pc</span>
+                </div>
+                <div class="compare-item">
+                    <span>2. Quaker Oats Overnight Oats • 180%</span>
+                    <span>₱115.00/150g</span>
+                </div>
+                <div class="compare-item">
+                    <span>3. Nature Bites Superfood Trail Mix • 175%</span>
+                    <span>₱120.00/200g</span>
+                </div>
+                <div class="compare-item">
+                    <span>4. Larabar Cashew Cookie • 168%</span>
+                    <span>₱125.00/pc</span>
+                </div>
+                <div class="compare-item">
+                    <span>5. Blue Diamond Almonds • 162%</span>
+                    <span>₱350.00/250g</span>
+                </div>
+                <div class="compare-item">
+                    <span>6. Clif Bar Energy Bar • 157%</span>
+                    <span>₱105.00/pc</span>
+                </div>
+                <div class="compare-item">
+                    <span>7. Nature Valley Granola Bars • 146%</span>
+                    <span>₱185.00/box</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-description">
+            <div class="description-text">
+                <p>Nature Bites Superfood Trail Mix - Classic Blend combines premium nuts, seeds, and dried fruits for a nutritionally balanced snack. Each 30g serving provides approximately 150 calories, with 9g of healthy fats, 6g of protein, and 5g of fiber. This trail mix is rich in antioxidants, omega-3 fatty acids, and essential micronutrients like magnesium, zinc, and vitamin E. Our Classic Blend is perfect for on-the-go energy, pre-workout fuel, or as a satisfying mid-day snack that keeps you full longer without the sugar crash of conventional snacks.</p>
+            </div>
+            <div class="marketing-warning">
+                <p>When choosing snacks, be wary of misleading claims on packaging. Many "healthy" snacks contain <a href="#" class="warning-links">hidden sugars</a> or <a href="#" class="warning-links">excessive preservatives</a>. Nature Bites uses only whole food ingredients with no artificial additives, colors, or flavors. Our trail mixes are minimally processed to preserve nutrient integrity and natural flavors. For optimal freshness and nutritional value, consume within 3 months of purchase and store in a cool, dry place away from direct sunlight.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="comparison-heading">Compare Products</h2>
+            
+            <!-- Iframe to load comparison content -->
+            <iframe id="compareFrame" style="width: 100%; height: 600px; border: none; margin-top: 20px; position: relative; left: 50%; transform: translateX(-50%);">
+            </iframe>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAboutModal">&times;</span>
+            <h2 class="comparison-heading">About GrocerEZ</h2>
+            <p>GrocerEZ is a food comparison platform that helps consumers make informed decisions about their food purchases. We provide detailed nutritional information, price comparisons, and user ratings for a wide range of food products.</p>
+            <p>Our mission is to promote healthier eating habits by making nutritional information more accessible and understandable.</p>
+            <p>Founded in 2023, GrocerEZ has quickly grown to become one of the most trusted food comparison platforms in the Philippines.</p>
+        </div>
+    </div>
+    
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeSigninModal">&times;</span>
+            <h2 class="signin-heading">Account Access</h2>
+            
+            <!-- Sign In Only - Create Account Tab Removed -->
+            <div class="auth-tabs">
+                <button id="signInTab" class="auth-tab active">Sign In</button>
+            </div>
+            
+            <!-- Firebase UI Container -->
+            <div id="firebaseui-auth-container"></div>
+            
+            <!-- User Account Info (shown when logged in) -->
+            <div id="userAccountInfo" style="display:none; margin-top: 20px;">
+                <h3>Welcome, <span id="userDisplayName">User</span></h3>
+                <p>Email: <span id="userEmail"></span></p>
+                <button id="signOutButton" class="button">Sign Out</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main scripts -->
+    <script src="scripts.js"></script>
+    
+    <script>
+        // Set active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current page filename
+            const currentPage = window.location.pathname.split('/').pop();
+            
+            // Find the corresponding navigation link and make it active
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Animate rating bars
+            const ratingFills = document.querySelectorAll('.rating-fill');
+            if (ratingFills.length > 0) {
+                // Custom percentages for this specific product page
+                const percentages = [75, 45, 68, 52, 38];
+                
+                ratingFills.forEach((fill, index) => {
+                    setTimeout(() => {
+                        fill.style.width = percentages[index % percentages.length] + '%';
+                    }, 500 + (100 * index));
+                });
+            }
+            
+            // Set up comparison modal
+            const compareBtn = document.getElementById('compare-btn');
+            const comparisonModal = document.getElementById('comparisonModal');
+            const closeModal = document.getElementById('closeModal');
+            
+            if (compareBtn && comparisonModal) {
+                compareBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    comparisonModal.style.display = 'block';
+                });
+            }
+            
+            if (closeModal && comparisonModal) {
+                closeModal.addEventListener('click', function() {
+                    comparisonModal.style.display = 'none';
+                });
+            }
+            
+            // Set up about modal
+            const aboutBtn = document.getElementById('about-btn');
+            const aboutModal = document.getElementById('aboutModal');
+            const closeAboutModal = document.getElementById('closeAboutModal');
+            
+            if (aboutBtn && aboutModal) {
+                aboutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    aboutModal.style.display = 'block';
+                });
+            }
+            
+            if (closeAboutModal && aboutModal) {
+                closeAboutModal.addEventListener('click', function() {
+                    aboutModal.style.display = 'none';
+                });
+            }
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === comparisonModal) {
+                    comparisonModal.style.display = 'none';
+                }
+                if (event.target === aboutModal) {
+                    aboutModal.style.display = 'none';
+                }
+                if (event.target === signinModal) {
+                    signinModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script src="cart.js"></script>
+</body>
+</html>

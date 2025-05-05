@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEZ - Beverages</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cart_styles.css">
+    <link rel="icon" type="image/png" href="assets/grocerEZ_icon.png">
+
+    <!-- Firebase scripts - Make sure these are loaded before any other scripts that use Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Firebase UI -->
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    
+    <!-- Auth script - Include this before other scripts -->
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div id="authSidebarContainer" style="display: none;"></div>
+
+    <header>
+        <a href="index.html">
+            <div class="logo"><img src="assets/grocerEZ_logo.png" alt="GrocerEZ" class="logo-img"></div>
+        </a>
+        <div class="user-info">
+            <div class="user-tag">
+                🔒 <span id="user-location">PHL-User</span> <span id="user-flag">🇵🇭</span>
+            </div>
+            <select id="country-select">
+                <option value="PH" selected>PH</option>
+                <option value="US">US</option>
+                <option value="UK">UK</option>
+                <option value="JP">JP</option>
+            </select>
+        </div>
+        <input type="search" class="search-bar" id="search-input" placeholder="Search...">
+    </header>
+    
+    <nav>
+        <div class="nav-links">
+            <a href="fruits.html" class="btn" id="fruits-link">FRUITS</a>
+            <a href="chips.html" class="btn" id="chips-link">CHIPS</a>
+            <a href="vegetables.html" class="btn" id="vegetables-link">VEGETABLES</a>
+            <a href="beverages.html" class="btn" id="beverages-link">BEVERAGES</a>
+            <a href="dairy.html" class="btn" id="dairy-link">DAIRY</a>
+            <a href="snacks.html" class="btn" id="snacks-link">SNACKS</a>
+            <a href="meats.html" class="btn" id="meats-link">MEATS</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#" id="compare-btn">COMPARE</a>
+            <a href="#" id="about-btn">ABOUT</a>
+            <a href="#" id="signin-btn">SIGN IN</a>
+        </div>
+    </nav>
+    
+    <div class="banner">
+        <h2 class="banner-title">The Best Beverages</h2>
+        <div class="ratings-bar">USER RATINGS - HYDRATION & HEALTH</div>
+    </div>
+    
+    <div class="product-section">
+        <div class="product-header">
+            <div class="product-info">
+                <div>
+                    <div class="product-name">Coco Earth</div>
+                    <div class="product-title" id="productTitle">Pure Coconut Water</div>
+                </div>
+            </div>
+            <div class="product-actions">
+                <a href="#" class="action-button">
+                    <span>🛒</span>
+                    <span>ADD TO CART</span>
+                </a>
+                <a href="#" class="action-button">
+                    <span>✓</span>
+                    <span>COMPARE</span>
+                </a>
+            </div>
+        </div>
+    
+        <!-- Stats Section -->
+        <div class="stats">
+            <div>NUTRITIONAL SCORE (114,883)</div>
+            <div>MKT (4.1%)</div>
+            <div>REVIEWS</div>
+            <div>₱65.00/L</div>
+        </div>
+    
+        <!-- Dynamic Product Info Section -->
+        <div class="score-section">
+            <div class="score-display">
+                <div class="score-arrows">▲</div>
+                <div class="score-value" id="scoreValue">89</div>
+                <div class="score-base" id="scoreBase">10.000</div>
+                <div class="score-arrows">▼</div>
+            </div>
+    
+            <!-- Image Section -->
+            <img src="Beverages_Images/pure_coconut.jpg" alt="Coco Earth Pure Coconut Water" class="product-image" id="productImage">
+    
+            <!-- Metrics Section -->
+            <div class="metrics" id="metricsSection">
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Hydration Index</span>
+                        <span class="metric-positive">+76%</span>
+                    </div>
+                    <div class="metric-details">Electrolyte balance +85%, Absorption rate +68%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Nutritional Profile</span>
+                        <span class="metric-positive">+51%</span>
+                    </div>
+                    <div class="metric-details">Potassium +124%, Magnesium +72%, Calcium +43%, Natural sugars -35%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Taste Experience</span>
+                        <span class="metric-positive">+34%</span>
+                    </div>
+                    <div class="metric-details">Natural flavor +47%, Sweetness +22%, Refreshment +43%, Aftertaste -10%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Value & Availability</span>
+                        <span class="metric-negative">-15%</span>
+                    </div>
+                    <div class="metric-details">User Rating +55%, Market Share +36%, Price -42%, Distribution -16%</div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Health Benefits</span>
+                        <span class="metric-positive">+63%</span>
+                    </div>
+                    <div class="metric-details">No Additives +95%, Low Calories +72%, Sports Recovery +78%, Antioxidants +41%</div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Variant Buttons Section -->
+        <div class="product-footer">
+            <div>Production date: April 5, 2025. Source: Organic coconut farms in Davao.</div>
+            
+            <div class="variants">
+                <button class="variant-button" onclick="updateProductInfo('pure')">Pure Natural</button>
+                <button class="variant-button" onclick="updateProductInfo('withPulp')">With Pulp</button>
+                <button class="variant-button" onclick="updateProductInfo('noSugar')">No Sugar Added</button>
+                <button class="variant-button" onclick="updateProductInfo('king')">King Coconut</button>
+                <button class="variant-button" onclick="updateProductInfo('organic')">Organic</button>
+                <button class="variant-button" onclick="updateProductInfo('sparkling')">Sparkling</button>
+                <button class="variant-button" onclick="updateProductInfo('hydration')">Extra Hydration</button>
+                <button class="variant-button" onclick="updateProductInfo('pineapple')">Pineapple Blend</button>
+            </div>
+            
+            <div>▶ Why coconut water outperforms sports drinks</div>
+        </div>
+    
+        <!-- Benchmark Section -->
+        <div class="benchmark-section">
+            <span> Average RATING: 183%</span>
+            <span class="benchmark-rank">(2<sup>nd</sup> of 215)</span>
+            <span>ℹ️</span>
+        </div>
+        
+        <div class="user-benchmark-info">
+            Based on 114,883 user hydration and nutritional ratings. Product: Pure Coconut Water by Coco Earth
+        </div>
+    
+        <script src="beverage_variants.js"></script>
+    </div>
+
+        <div class="thumbnail-grid">
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Pure Natural" class="thumbnail-img">
+                <div class="thumbnail-name">Pure Natural</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="With Pulp" class="thumbnail-img">
+                <div class="thumbnail-name">With Pulp</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="No Sugar Added" class="thumbnail-img">
+                <div class="thumbnail-name">No Sugar Added</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="King Coconut" class="thumbnail-img">
+                <div class="thumbnail-name">King Coconut</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Organic" class="thumbnail-img">
+                <div class="thumbnail-name">Organic</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Sparkling" class="thumbnail-img">
+                <div class="thumbnail-name">Sparkling</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Extra Hydration" class="thumbnail-img">
+                <div class="thumbnail-name">Extra Hydration</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Pineapple Blend" class="thumbnail-img">
+                <div class="thumbnail-name">Pineapple Blend</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Sport Formula" class="thumbnail-img">
+                <div class="thumbnail-name">Sport Formula</div>
+            </div>
+        </div>
+
+        <div class="alternatives-section">
+            <select class="compare-dropdown">
+                <option>Compare Alternatives</option>
+            </select>
+            <input type="search" class="compare-dropdown" placeholder="Search...">
+            
+            <div class="compare-results">
+                <div class="compare-header">** GROUP AVERAGE (9 HIGHEST-VOTED) **</div>
+                <div class="compare-item">
+                    <span>1. Pure Mineral Spring Water • 195%</span>
+                    <span>₱32.00/L</span>
+                </div>
+                <div class="compare-item">
+                    <span>2. Coco Earth Coconut Water • 183%</span>
+                    <span>₱65.00/L</span>
+                </div>
+                <div class="compare-item">
+                    <span>3. Green Leaf Matcha Tea • 172%</span>
+                    <span>₱120.00/L</span>
+                </div>
+                <div class="compare-item">
+                    <span>4. Pure Antioxidant Kombucha • 167%</span>
+                    <span>₱180.00/L</span>
+                </div>
+                <div class="compare-item">
+                    <span>5. Vital Hydration Electrolyte Water • 159%</span>
+                    <span>₱75.00/L</span>
+                </div>
+                <div class="compare-item">
+                    <span>6. Freshly Squeezed Orange Juice • 151%</span>
+                    <span>₱110.00/L</span>
+                </div>
+                <div class="compare-item">
+                    <span>7. Tropical Fruit Smoothie • 144%</span>
+                    <span>₱135.00/L</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-description">
+            <div class="description-text">
+                <p>Coco Earth Pure Coconut Water is harvested from young green coconuts grown in the pristine farms of Davao. This natural beverage contains five essential electrolytes (sodium, potassium, calcium, magnesium, and phosphorus) in proportions similar to human plasma, making it an excellent hydration choice. Each 330ml serving provides 294mg of potassium (9% DV), 25mg of magnesium (6% DV), and only 60 calories with no added sugars, preservatives, or artificial flavors. The coconut water is packaged within 72 hours of harvest using a cold-pressing technique that preserves natural enzymes and nutrients. Naturally isotonic, it has the same level of electrolyte balance as human blood, making it ideal for post-workout recovery.</p>
+            </div>
+            <div class="marketing-warning">
+                <p>When evaluating beverages, be aware that many commercial drinks contain <a href="#" class="warning-links">hidden sugars</a>, <a href="#" class="warning-links">artificial sweeteners</a>, and <a href="#" class="warning-links">preservatives</a> not clearly listed on front labels. Coco Earth Coconut Water offers superior natural hydration compared to sports drinks, with no artificial ingredients and significantly less sugar. For maximum benefits, consume chilled within 5 days of opening. Unlike many competitors, this product contains no concentrate or reconstituted coconut water—only pure, natural liquid from green coconuts.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="comparison-heading">Compare Products</h2>
+            
+            <!-- Iframe to load comparison content -->
+            <iframe id="compareFrame" style="width: 100%; height: 600px; border: none; margin-top: 20px; position: relative; left: 50%; transform: translateX(-50%);">
+            </iframe>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAboutModal">&times;</span>
+            <h2 class="comparison-heading">About ShopEZ</h2>
+            <p>ShopEZ is a food comparison platform that helps consumers make informed decisions about their food purchases. We provide detailed nutritional information, price comparisons, and user ratings for a wide range of food products.</p>
+            <p>Our mission is to promote healthier eating habits by making nutritional information more accessible and understandable.</p>
+            <p>Founded in 2023, ShopEZ has quickly grown to become one of the most trusted food comparison platforms in the Philippines.</p>
+        </div>
+    </div>
+    
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeSigninModal">&times;</span>
+            <h2 class="signin-heading">Account Access</h2>
+            
+            <!-- Sign In Only - Create Account Tab Removed -->
+            <div class="auth-tabs">
+                <button id="signInTab" class="auth-tab active">Sign In</button>
+            </div>
+            
+            <!-- Firebase UI Container -->
+            <div id="firebaseui-auth-container"></div>
+            
+            <!-- User Account Info (shown when logged in) -->
+            <div id="userAccountInfo" style="display:none; margin-top: 20px;">
+                <h3>Welcome, <span id="userDisplayName">User</span></h3>
+                <p>Email: <span id="userEmail"></span></p>
+                <button id="signOutButton" class="button">Sign Out</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main scripts -->
+    <script src="scripts.js"></script>
+    
+    <script>
+        // Set active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current page filename
+            const currentPage = window.location.pathname.split('/').pop();
+            
+            // Find the corresponding navigation link and make it active
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Animate rating bars
+            const ratingFills = document.querySelectorAll('.rating-fill');
+            if (ratingFills.length > 0) {
+                // Custom percentages for this specific product page
+                const percentages = [76, 51, 34, 35, 63];
+                
+                ratingFills.forEach((fill, index) => {
+                    setTimeout(() => {
+                        fill.style.width = percentages[index % percentages.length] + '%';
+                    }, 500 + (100 * index));
+                });
+            }
+            
+            // Set up comparison modal
+            const compareBtn = document.getElementById('compare-btn');
+            const comparisonModal = document.getElementById('comparisonModal');
+            const closeModal = document.getElementById('closeModal');
+            
+            if (compareBtn && comparisonModal) {
+                compareBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    comparisonModal.style.display = 'block';
+                });
+            }
+            
+            if (closeModal && comparisonModal) {
+                closeModal.addEventListener('click', function() {
+                    comparisonModal.style.display = 'none';
+                });
+            }
+            
+            // Set up about modal
+            const aboutBtn = document.getElementById('about-btn');
+            const aboutModal = document.getElementById('aboutModal');
+            const closeAboutModal = document.getElementById('closeAboutModal');
+            
+            if (aboutBtn && aboutModal) {
+                aboutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    aboutModal.style.display = 'block';
+                });
+            }
+            
+            if (closeAboutModal && aboutModal) {
+                closeAboutModal.addEventListener('click', function() {
+                    aboutModal.style.display = 'none';
+                });
+            }
+            
+            // Setup sign in modal
+            const signinBtn = document.getElementById('signin-btn');
+            const signinModal = document.getElementById('signinModal');
+            const closeSigninModal = document.getElementById('closeSigninModal');
+            
+            if (signinBtn && signinModal) {
+                signinBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    signinModal.style.display = 'block';
+                });
+            }
+            
+            if (closeSigninModal && signinModal) {
+                closeSigninModal.addEventListener('click', function() {
+                    signinModal.style.display = 'none';
+                });
+            }
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === comparisonModal) {
+                    comparisonModal.style.display = 'none';
+                }
+                if (event.target === aboutModal) {
+                    aboutModal.style.display = 'none';
+                }
+                if (event.target === signinModal) {
+                    signinModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script src="cart.js"></script>
+</body>
+</html>

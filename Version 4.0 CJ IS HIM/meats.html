@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEZ - Meats</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cart_styles.css">
+    <link rel="icon" type="image/png" href="assets/grocerEZ_icon.png">
+    
+    <!-- Firebase scripts - Make sure these are loaded before any other scripts that use Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Firebase UI -->
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    
+    <!-- Auth script - Include this before other scripts -->
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div id="authSidebarContainer" style="display: none;"></div>
+
+    <header>
+ 
+        <a href="index.html">
+            <div class="logo"><img src="assets/grocerEZ_logo.png" alt="GrocerEZ" class="logo-img"></div>
+        </a>
+        <div class="user-info">
+            <div class="user-tag">
+                🔒 <span id="user-location">PHL-User</span> <span id="user-flag">🇵🇭</span>
+            </div>
+            <select id="country-select">
+                <option value="PH" selected>PH</option>
+                <option value="US">US</option>
+                <option value="UK">UK</option>
+                <option value="JP">JP</option>
+            </select>
+        </div>
+        <input type="search" class="search-bar" id="search-input" placeholder="Search...">
+    </header>
+    
+    <nav>
+        <div class="nav-links">
+            <a href="fruits.html" class="btn" id="fruits-link">FRUITS</a>
+            <a href="chips.html" class="btn" id="chips-link">CHIPS</a>
+            <a href="vegetables.html" class="btn" id="vegetables-link">VEGETABLES</a>
+            <a href="beverages.html" class="btn" id="beverages-link">BEVERAGES</a>
+            <a href="dairy.html" class="btn" id="dairy-link">DAIRY</a>
+            <a href="snacks.html" class="btn" id="snacks-link">SNACKS</a>
+            <a href="meats.html" class="btn" id="meats-link">MEATS</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#" id="compare-btn">COMPARE</a>
+            <a href="#" id="about-btn">ABOUT</a>
+            <a href="#" id="signin-btn">SIGN IN</a>
+        </div>
+    </nav>
+    
+    <div class="banner">
+        <h2 class="banner-title">The Best Chicken</h2>
+        <div class="ratings-bar">USER RATINGS - NUTRITION VALUE</div>
+    </div>
+    
+    <div class="product-section">
+        <div class="product-header">
+            <div class="product-info">
+                <div>
+                    <div class="product-name">Chicken</div>
+                    <div class="product-title" id="productTitle">Boneless Skinless Chicken Breast</div>
+                </div>
+            </div>
+            <div class="product-actions">
+                <a href="#" class="action-button">
+                    <span>🛒</span>
+                    <span>ADD TO CART</span>
+                </a>
+                <a href="#" class="action-button">
+                    <span>✓</span>
+                    <span>COMPARE</span>
+                </a>
+            </div>
+        </div>
+    
+        <!-- Stats Section -->
+        <div class="stats">
+            <div>NUTRITIONAL SCORE (85,240)</div>
+            <div>MKT (9.1%)</div>
+            <div>REVIEWS</div>
+            <div>₱150.00/kg</div>
+        </div>
+    
+        <!-- Dynamic Product Info Section -->
+        <div class="score-section">
+            <div class="score-display">
+                <div class="score-arrows">▲</div>
+                <div class="score-value" id="scoreValue">89</div>
+                <div class="score-base" id="scoreBase">9.100</div>
+                <div class="score-arrows">▼</div>
+            </div>
+    
+            <!-- Image Section -->
+            <img src="Meats_Images/boneless_meat.jpg" alt="Boneless Skinless Chicken Breast" class="product-image" id="productImage">
+    
+            <!-- Metrics Section -->
+            <div class="metrics" id="metricsSection">
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Calorie Efficiency</span>
+                        <span class="metric-positive">+35%</span>
+                    </div>
+                    <div class="metric-details">Nutrients per calorie +35% vs category average</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Nutrition Score</span>
+                        <span class="metric-positive">+60%</span>
+                    </div>
+                    <div class="metric-details">Vitamins +68%, Minerals +58%, Protein +73%, Fiber +33%</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Taste Score</span>
+                        <span class="metric-positive">+40%</span>
+                    </div>
+                    <div class="metric-details">Flavor +52%, Tenderness +35%, Juiciness +45%</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Value & Sentiment</span>
+                        <span class="metric-positive">+50%</span>
+                    </div>
+                    <div class="metric-details">User Rating +60%, Market Share +35%, Price +45%</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Environmental Impact</span>
+                        <span class="metric-negative">-10%</span>
+                    </div>
+                    <div class="metric-details">Carbon Footprint -20%, Packaging -15%, Ethical Sourcing +5%</div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Variant Buttons Section -->
+        <div class="product-footer">
+            <div>Harvest season: Year-round. Current batch: March 2025.</div>
+    
+            <div class="variants">
+                <button class="variant-button" onclick="updateProductInfo('boneless')">Boneless Skinless</button>
+                <button class="variant-button" onclick="updateProductInfo('bonein')">Bone-in Chicken Thigh</button>
+                <button class="variant-button" onclick="updateProductInfo('ground')">Ground Chicken</button>
+                <button class="variant-button" onclick="updateProductInfo('thinsliced')">Thin-sliced Chicken Breast</button>
+                <button class="variant-button" onclick="updateProductInfo('diced')">Diced Chicken Breast</button>
+                <button class="variant-button" onclick="updateProductInfo('organic')">Organic Chicken Breast</button>
+                <button class="variant-button" onclick="updateProductInfo('familypack')">Family Pack Chicken Thighs</button>
+                <button class="variant-button" onclick="updateProductInfo('marinated')">Marinated Chicken Breast</button>
+            </div>
+    
+            <div>▶ How product quality affects nutritional value</div>
+        </div>
+    
+        <!-- Benchmark Section -->
+        <div class="benchmark-section">
+            <span id="benchmarkRating">Average RATING: 90%</span>
+            <span id="benchmarkRank">(2<sup>nd</sup> of 50)</span>
+            <span>ℹ️</span>
+        </div>
+    
+        <div class="user-benchmark-info">
+            Based on 85,240 user nutritional ratings. Product: Boneless Skinless Chicken Breast
+        </div>
+    
+        <script src="meat_variants.js"></script>
+    </div>
+    
+    
+    
+    </div>
+    
+    
+    
+    <div class="thumbnail-grid">
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Boneless Skinless" class="thumbnail-img">
+            <div class="thumbnail-name">Boneless Skinless</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Bone-in" class="thumbnail-img">
+            <div class="thumbnail-name">Bone-in</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Ground" class="thumbnail-img">
+            <div class="thumbnail-name">Ground</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Thin-sliced" class="thumbnail-img">
+            <div class="thumbnail-name">Thin-sliced</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Diced" class="thumbnail-img">
+            <div class="thumbnail-name">Diced</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Organic" class="thumbnail-img">
+            <div class="thumbnail-name">Organic</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Family Pack" class="thumbnail-img">
+            <div class="thumbnail-name">Family Pack</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Marinated" class="thumbnail-img">
+            <div class="thumbnail-name">Marinated</div>
+        </div>
+        <div class="thumbnail-item">
+            <img src="/api/placeholder/80/80" alt="Butterfly Cut" class="thumbnail-img">
+            <div class="thumbnail-name">Butterfly Cut</div>
+        </div>
+    </div>
+
+    <div class="alternatives-section">
+        <select class="compare-dropdown">
+            <option>Compare Alternatives</option>
+        </select>
+        <input type="search" class="compare-dropdown" placeholder="Search...">
+        
+        <div class="compare-results">
+            <div class="compare-header">** GROUP AVERAGE (9 HIGHEST-VOTED) **</div>
+            <div class="compare-item">
+                <span>1. Grass-Fed Beef Sirloin • 189%</span>
+                <span>₱380.00/500g</span>
+            </div>
+            <div class="compare-item">
+                <span>2. Prime Select Chicken Breast • 182%</span>
+                <span>₱280.00/500g</span>
+            </div>
+            <div class="compare-item">
+                <span>3. Heritage Pork Tenderloin • 177%</span>
+                <span>₱320.00/500g</span>
+            </div>
+            <div class="compare-item">
+                <span>4. Sustainably Caught Salmon • 172%</span>
+                <span>₱420.00/500g</span>
+            </div>
+            <div class="compare-item">
+                <span>5. Free-Range Turkey Breast • 165%</span>
+                <span>₱350.00/500g</span>
+            </div>
+            <div class="compare-item">
+                <span>6. Local Goat Meat • 158%</span>
+                <span>₱290.00/500g</span>
+            </div>
+            <div class="compare-item">
+                <span>7. Pasture-Raised Duck • 152%</span>
+                <span>₱340.00/500g</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="product-description">
+        <div class="description-text">
+            <p>Prime Select Free-Range Chicken Breast offers premium quality poultry raised in spacious, open environments with access to natural sunlight and fresh vegetation. These chickens are fed a balanced diet of non-GMO grains supplemented with natural nutrients and are never administered antibiotics or growth hormones. Each 100g serving delivers approximately 31g of complete protein containing all essential amino acids, is low in saturated fat (1.3g), and is an excellent source of B vitamins, particularly niacin and B6. The meat is processed in a HACCP-certified facility under strict temperature controls to ensure food safety. Prime Select's network of partner farms in Batangas follows stringent animal welfare standards, allowing birds to exhibit natural behaviors while protecting them from predators and extreme weather. The meat is vacuum-sealed immediately after processing to maintain freshness and is delivered through a continuous cold chain to ensure optimal quality and safety at purchase.</p>
+        </div>
+        <div class="marketing-warning">
+            <p>When selecting chicken products, be aware that terms like "natural" have minimal regulatory requirements and don't necessarily indicate higher welfare standards or better nutrition. Many conventional chicken products contain <a href="#" class="warning-links">retained water</a>, <a href="#" class="warning-links">phosphate additives</a>, and <a href="#" class="warning-links">sodium solutions</a> that artificially increase weight and may affect flavor and texture. Prime Select Free-Range Chicken contains no added solutions or preservatives. For optimal safety, keep refrigerated below 4°C and use within 2 days of purchase, or freeze for up to 6 months. Unlike many competitors, this product is individually packaged to prevent cross-contamination and comes from farms that undergo regular third-party audits for animal welfare compliance.</p>
+        </div>
+    </div>
+    
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="comparison-heading">Compare Products</h2>
+            
+            <!-- Iframe to load comparison content -->
+            <iframe id="compareFrame" style="width: 100%; height: 600px; border: none; margin-top: 20px; position: relative; left: 50%; transform: translateX(-50%);">
+            </iframe>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAboutModal">&times;</span>
+            <h2 class="comparison-heading">About ShopEZ</h2>
+            <p>ShopEZ is a food comparison platform that helps consumers make informed decisions about their food purchases. We provide detailed nutritional information, price comparisons, and user ratings for a wide range of food products.</p>
+            <p>Our mission is to promote healthier eating habits by making nutritional information more accessible and understandable.</p>
+            <p>Founded in 2023, ShopEZ has quickly grown to become one of the most trusted food comparison platforms in the Philippines.</p>
+        </div>
+    </div>
+    
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeSigninModal">&times;</span>
+            <h2 class="signin-heading">Account Access</h2>
+            
+            <!-- Sign In Only - Create Account Tab Removed -->
+            <div class="auth-tabs">
+                <button id="signInTab" class="auth-tab active">Sign In</button>
+            </div>
+            
+            <!-- Firebase UI Container -->
+            <div id="firebaseui-auth-container"></div>
+            
+            <!-- User Account Info (shown when logged in) -->
+            <div id="userAccountInfo" style="display:none; margin-top: 20px;">
+                <h3>Welcome, <span id="userDisplayName">User</span></h3>
+                <p>Email: <span id="userEmail"></span></p>
+                <button id="signOutButton" class="button">Sign Out</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main scripts -->
+    <script src="scripts.js"></script>
+    
+    <script>
+        // Set active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current page filename
+            const currentPage = window.location.pathname.split('/').pop();
+            
+            // Find the corresponding navigation link and make it active
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Animate rating bars
+            const ratingFills = document.querySelectorAll('.rating-fill');
+            if (ratingFills.length > 0) {
+                // Custom percentages for this specific product page
+                const percentages = [88, 83, 77, 38, 89];
+                
+                ratingFills.forEach((fill, index) => {
+                    setTimeout(() => {
+                        fill.style.width = percentages[index % percentages.length] + '%';
+                    }, 500 + (100 * index));
+                });
+            }
+             
+            // Set up comparison modal
+            const compareBtn = document.getElementById('compare-btn');
+            const comparisonModal = document.getElementById('comparisonModal');
+            const closeModal = document.getElementById('closeModal');
+            
+            if (compareBtn && comparisonModal) {
+                compareBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    comparisonModal.style.display = 'block';
+                });
+            }
+            
+            if (closeModal && comparisonModal) {
+                closeModal.addEventListener('click', function() {
+                    comparisonModal.style.display = 'none';
+                });
+            }
+            
+            // Set up about modal
+            const aboutBtn = document.getElementById('about-btn');
+            const aboutModal = document.getElementById('aboutModal');
+            const closeAboutModal = document.getElementById('closeAboutModal');
+            
+            if (aboutBtn && aboutModal) {
+                aboutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    aboutModal.style.display = 'block';
+                });
+            }
+            
+            if (closeAboutModal && aboutModal) {
+                closeAboutModal.addEventListener('click', function() {
+                    aboutModal.style.display = 'none';
+                });
+            }
+            
+            // Set up sign in modal
+            const signinBtn = document.getElementById('signin-btn');
+            const signinModal = document.getElementById('signinModal');
+            const closeSigninModal = document.getElementById('closeSigninModal');
+            
+            if (signinBtn && signinModal) {
+                signinBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    signinModal.style.display = 'block';
+                });
+            }
+            
+            if (closeSigninModal && signinModal) {
+                closeSigninModal.addEventListener('click', function() {
+                    signinModal.style.display = 'none';
+                });
+            }
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === comparisonModal) {
+                    comparisonModal.style.display = 'none';
+                }
+                if (event.target === aboutModal) {
+                    aboutModal.style.display = 'none';
+                }
+                if (event.target === signinModal) {
+                    signinModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script src="cart.js"></script>
+</body>
+</html>

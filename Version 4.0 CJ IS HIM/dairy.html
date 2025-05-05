@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEZ - Dairy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cart_styles.css">
+    <link rel="icon" type="image/png" href="assets/grocerEZ_icon.png">
+    
+    <!-- Use Firebase v8 (non-module) to avoid import/export errors -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Firebase UI -->
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div id="authSidebarContainer" style="display: none;"></div>
+
+    <header>
+        <a href="index.html">
+            <div class="logo"><img src="assets/grocerEZ_logo.png" alt="GrocerEZ" class="logo-img"></div>
+        </a>
+        <div class="user-info">
+            <div class="user-tag">
+                🔒 <span id="user-location">PHL-User</span> <span id="user-flag">🇵🇭</span>
+            </div>
+            <select id="country-select">
+                <option value="PH" selected>PH</option>
+                <option value="US">US</option>
+                <option value="UK">UK</option>
+                <option value="JP">JP</option>
+            </select>
+        </div>
+        <input type="search" class="search-bar" id="search-input" placeholder="Search...">
+    </header>
+    
+    <nav>
+        <div class="nav-links">
+            <a href="fruits.html" class="btn" id="fruits-link">FRUITS</a>
+            <a href="chips.html" class="btn" id="chips-link">CHIPS</a>
+            <a href="vegetables.html" class="btn" id="vegetables-link">VEGETABLES</a>
+            <a href="beverages.html" class="btn" id="beverages-link">BEVERAGES</a>
+            <a href="dairy.html" class="btn" id="dairy-link">DAIRY</a>
+            <a href="snacks.html" class="btn" id="snacks-link">SNACKS</a>
+            <a href="meats.html" class="btn" id="meats-link">MEATS</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#" id="compare-btn">COMPARE</a>
+            <a href="#" id="about-btn">ABOUT</a>
+            <a href="#" id="signin-btn">SIGN IN</a>
+        </div>
+    </nav>
+    
+    <div class="banner">
+        <h2 class="banner-title">The Best Dairy Products</h2>
+        <div class="ratings-bar">USER RATINGS - NUTRITION & QUALITY</div>
+    </div>
+    
+    <div class="product-section">
+        <div class="product-header">
+            <div class="product-info">
+                <div>
+                    <div class="product-name">Grassland Farms</div>
+                    <div class="product-title" id="productTitle">Plain Greek Yogurt</div>
+                </div>
+            </div>
+            <div class="product-actions">
+                <a href="#" class="action-button">
+                    <span>🛒</span>
+                    <span>ADD TO CART</span>
+                </a>
+                <a href="#" class="action-button">
+                    <span>✓</span>
+                    <span>COMPARE</span>
+                </a>
+            </div>
+        </div>
+    
+        <div class="stats">
+            <div>NUTRITIONAL SCORE (92,451)</div>
+            <div>MKT (5.3%)</div>
+            <div>REVIEWS</div>
+            <div>₱95.00/500g</div>
+        </div>
+    
+        <div class="score-section">
+            <div class="score-display">
+                <div class="score-arrows">▲</div>
+                <div class="score-value" id="scoreValue">92</div>
+                <div class="score-base" id="scoreBase">10.000</div>
+                <div class="score-arrows">▼</div>
+            </div>
+    
+            <img src="Dairy_Images/plain_dairy.jpg" alt="Grassland Farms Plain Greek Yogurt" class="product-image" id="productImage">
+    
+            <div class="metrics" id="metricsSection">
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Taste Score</span>
+                        <span class="metric-positive">+58%</span>
+                    </div>
+                    <div class="metric-details">Creaminess +69%, Flavor depth +47%, Consistency +71%, Aftertaste -8%</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Texture Score</span>
+                        <span class="metric-positive">+82%</span>
+                    </div>
+                    <div class="metric-details">Protein density +93%, Essential amino acids +74%, Digestibility +79%</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Satisfaction</span>
+                        <span class="metric-positive">+67%</span>
+                    </div>
+                    <div class="metric-details">Live cultures +125%, Bacterial diversity +83%, Gut health impact +56%</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Health Score</span>
+                        <span class="metric-positive">+74%</span>
+                    </div>
+                    <div class="metric-details">Calcium +84%, Low Sugar +90%, Vitamin B12 +65%, Folate +57%</div>
+                </div>
+    
+                <div class="metric-item">
+                    <div class="metric-title">
+                        <span>Value & Sentiment</span>
+                        <span class="metric-negative">-12%</span>
+                    </div>
+                    <div class="metric-details">User Rating +68%, Market Share +42%, Price -39%, Distribution -19%</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="product-footer">
+            <div>Production date: April 8, 2025. Source: Grassland Farms dairy cooperative in Batangas.</div>
+    
+            <div class="variants">
+                <button class="variant-button" onclick="updateProductInfo('plain')">Plain</button>
+                <button class="variant-button" onclick="updateProductInfo('lowfat')">Low Fat</button>
+                <button class="variant-button" onclick="updateProductInfo('nonfat')">Non-Fat</button>
+                <button class="variant-button" onclick="updateProductInfo('honey')">Honey</button>
+                <button class="variant-button" onclick="updateProductInfo('mango')">Mango</button>
+                <button class="variant-button" onclick="updateProductInfo('strawberry')">Strawberry</button>
+                <button class="variant-button" onclick="updateProductInfo('blueberry')">Blueberry</button>
+                <button class="variant-button" onclick="updateProductInfo('coconut')">Coconut</button>
+            </div>
+    
+            <div>▶ Why Greek yogurt is superior to regular yogurt</div>
+        </div>
+    
+        <div class="benchmark-section">
+            <span> Average RATING: 191%</span>
+            <span class="benchmark-rank">(1<sup>st</sup> of 178)</span>
+            <span>ℹ️</span>
+        </div>
+    
+        <div class="user-benchmark-info">
+            Based on 92,451 user nutrition and quality ratings. Product: Plain Greek Yogurt by Grassland Farms
+        </div>
+    </div>
+    
+    <script src="dairy_variants.js"></script>
+    
+
+        <div class="thumbnail-grid">
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Plain" class="thumbnail-img">
+                <div class="thumbnail-name">Plain</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Low Fat" class="thumbnail-img">
+                <div class="thumbnail-name">Low Fat</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Non-Fat" class="thumbnail-img">
+                <div class="thumbnail-name">Non-Fat</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Honey" class="thumbnail-img">
+                <div class="thumbnail-name">Honey</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Mango" class="thumbnail-img">
+                <div class="thumbnail-name">Mango</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Strawberry" class="thumbnail-img">
+                <div class="thumbnail-name">Strawberry</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Blueberry" class="thumbnail-img">
+                <div class="thumbnail-name">Blueberry</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Coconut" class="thumbnail-img">
+                <div class="thumbnail-name">Coconut</div>
+            </div>
+            <div class="thumbnail-item">
+                <img src="/api/placeholder/80/80" alt="Protein Plus" class="thumbnail-img">
+                <div class="thumbnail-name">Protein Plus</div>
+            </div>
+        </div>
+
+        <div class="alternatives-section">
+            <select class="compare-dropdown">
+                <option>Compare Alternatives</option>
+            </select>
+            <input type="search" class="compare-dropdown" placeholder="Search...">
+            
+            <div class="compare-results">
+                <div class="compare-header">** GROUP AVERAGE (9 HIGHEST-VOTED) **</div>
+                <div class="compare-item">
+                    <span>1. Grassland Farms Greek Yogurt • 191%</span>
+                    <span>₱95.00/500g</span>
+                </div>
+                <div class="compare-item">
+                    <span>2. Organic Valley Grass-fed Milk • 184%</span>
+                    <span>₱120.00/L</span>
+                </div>
+                <div class="compare-item">
+                    <span>3. Carabao Fresh Mozzarella • 176%</span>
+                    <span>₱285.00/250g</span>
+                </div>
+                <div class="compare-item">
+                    <span>4. Highland Artisan Kefir • 169%</span>
+                    <span>₱150.00/500ml</span>
+                </div>
+                <div class="compare-item">
+                    <span>5. Farm Fresh Butter • 162%</span>
+                    <span>₱180.00/250g</span>
+                </div>
+                <div class="compare-item">
+                    <span>6. White Peak Cottage Cheese • 156%</span>
+                    <span>₱135.00/250g</span>
+                </div>
+                <div class="compare-item">
+                    <span>7. Golden Meadows Cheddar • 148%</span>
+                    <span>₱220.00/200g</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-description">
+            <div class="description-text">
+                <p>Grassland Farms Premium Greek Yogurt is crafted from milk sourced from grass-fed cows raised in the lush pastures of Batangas. This authentic Greek yogurt is strained traditionally to remove excess whey, resulting in an exceptionally thick, creamy texture with twice the protein content of regular yogurt. Each 170g serving provides 17g of high-quality protein, 220mg of calcium (22% DV), and contains over 5 billion CFU of live probiotic cultures from five different strains. The plain variety contains no added sugars, artificial flavors, preservatives, or thickeners. The yogurt undergoes a slow fermentation process of 24+ hours that enhances both flavor development and probiotic content. Grassland Farms works directly with local dairy farmers who follow sustainable farming practices and ensure ethical animal treatment.</p>
+            </div>
+            <div class="marketing-warning">
+                <p>When evaluating dairy products, be aware that many commercial brands contain <a href="#" class="warning-links">unnecessary additives</a>, <a href="#" class="warning-links">hidden sugars</a>, and <a href="#" class="warning-links">artificial thickeners</a> not clearly listed on front labels. Grassland Farms Greek Yogurt offers superior nutritional benefits compared to regular yogurt and processed dairy desserts, with significantly more protein and less sugar. For maximum probiotic benefits, consume before the expiration date and store at proper refrigeration temperatures. Unlike many competitors, this product contains no gelatin, pectin, or other artificial thickeners—only naturally strained milk cultured with active probiotics.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="comparison-heading">Compare Products</h2>
+            
+            <!-- Iframe to load comparison content -->
+            <iframe id="compareFrame" style="width: 100%; height: 600px; border: none; margin-top: 20px; position: relative; left: 50%; transform: translateX(-50%);">
+            </iframe>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAboutModal">&times;</span>
+            <h2 class="comparison-heading">About ShopEZ</h2>
+            <p>ShopEZ is a food comparison platform that helps consumers make informed decisions about their food purchases. We provide detailed nutritional information, price comparisons, and user ratings for a wide range of food products.</p>
+            <p>Our mission is to promote healthier eating habits by making nutritional information more accessible and understandable.</p>
+            <p>Founded in 2023, ShopEZ has quickly grown to become one of the most trusted food comparison platforms in the Philippines.</p>
+        </div>
+    </div>
+    
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeSigninModal">&times;</span>
+            <h2 class="signin-heading">Account Access</h2>
+            
+            <!-- Sign In Only - Create Account Tab Removed -->
+            <div class="auth-tabs">
+                <button id="signInTab" class="auth-tab active">Sign In</button>
+            </div>
+            
+            <!-- Firebase UI Container -->
+            <div id="firebaseui-auth-container"></div>
+            
+            <!-- User Account Info (shown when logged in) -->
+            <div id="userAccountInfo" style="display:none; margin-top: 20px;">
+                <h3>Welcome, <span id="userDisplayName">User</span></h3>
+                <p>Email: <span id="userEmail"></span></p>
+                <button id="signOutButton" class="button">Sign Out</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main scripts -->
+    <script src="scripts.js"></script>
+    <script src="cart.js"></script>
+    
+    <script>
+        // Set active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current page filename
+            const currentPage = window.location.pathname.split('/').pop();
+            
+            // Find the corresponding navigation link and make it active
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Animate rating bars
+            const ratingFills = document.querySelectorAll('.rating-fill');
+            if (ratingFills.length > 0) {
+                // Custom percentages for this specific product page
+                const percentages = [82, 67, 58, 38, 74];
+                
+                ratingFills.forEach((fill, index) => {
+                    setTimeout(() => {
+                        fill.style.width = percentages[index % percentages.length] + '%';
+                    }, 500 + (100 * index));
+                });
+            }
+            
+            // Set up comparison modal
+            const compareBtn = document.getElementById('compare-btn');
+            const comparisonModal = document.getElementById('comparisonModal');
+            const closeModal = document.getElementById('closeModal');
+            
+            if (compareBtn && comparisonModal) {
+                compareBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    comparisonModal.style.display = 'block';
+                });
+            }
+            
+            if (closeModal && comparisonModal) {
+                closeModal.addEventListener('click', function() {
+                    comparisonModal.style.display = 'none';
+                });
+            }
+            
+            // Set up about modal
+            const aboutBtn = document.getElementById('about-btn');
+            const aboutModal = document.getElementById('aboutModal');
+            const closeAboutModal = document.getElementById('closeAboutModal');
+            
+            if (aboutBtn && aboutModal) {
+                aboutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    aboutModal.style.display = 'block';
+                });
+            }
+            
+            if (closeAboutModal && aboutModal) {
+                closeAboutModal.addEventListener('click', function() {
+                    aboutModal.style.display = 'none';
+                });
+            }
+            
+            // Set up signin modal
+            const signinBtn = document.getElementById('signin-btn');
+            const signinModal = document.getElementById('signinModal');
+            const closeSigninModal = document.getElementById('closeSigninModal');
+            
+            if (signinBtn && signinModal) {
+                signinBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    signinModal.style.display = 'block';
+                });
+            }
+            
+            if (closeSigninModal && signinModal) {
+                closeSigninModal.addEventListener('click', function() {
+                    signinModal.style.display = 'none';
+                });
+            }
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === comparisonModal) {
+                    comparisonModal.style.display = 'none';
+                }
+                if (event.target === aboutModal) {
+                    aboutModal.style.display = 'none';
+                }
+                if (event.target === signinModal) {
+                    signinModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
