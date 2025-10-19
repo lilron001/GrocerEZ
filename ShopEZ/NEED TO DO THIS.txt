@@ -1,5 +1,0 @@
-Ai recommendation/summary Overview
-ex: what if I prefer bbq flavor
-the AI WOULD STATE THIS
-BBQ are more likely to be choosen by otherpeople in 75%
-Cheese are being choosen by otherpeople in 16%
